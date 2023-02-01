@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="btnPercent">%</string>
+    <string name="btnClearE">CE</string>
+    <string name="btnClearAll">C</string>
+    <string name="btnBackspace">\u232B</string>
+</resources>
