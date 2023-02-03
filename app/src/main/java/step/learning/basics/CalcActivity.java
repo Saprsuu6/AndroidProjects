@@ -5,38 +5,57 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
+
+import java.util.Arrays;
+import java.util.List;
+
+import step.learning.basics.buttons.Buttons;
+import step.learning.basics.views.Views;
 
 public class CalcActivity extends AppCompatActivity {
-    private TextView tvHistory;
-    private TextView tvResult;
+    private Views views;
+    private Buttons buttons;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calc);
 
-        tvHistory = findViewById(R.id.tvHistory);
-        tvResult = findViewById(R.id.tvResult);
-        tvHistory.setText("");
-        tvResult.setText("0");
+        views = new Views(findViewById(R.id.tvHistory), findViewById(R.id.tvResult));
+        views.getTvHistory().setText("");
+        views.getTvResult().setText("0");
 
-        findViewById(R.id.btnSeven).setOnClickListener(this::digitClick);
+        buttons = new Buttons(FindNumbers(), FindOperations(),
+                findViewById(R.id.btnPlusMinus), findViewById(R.id.btnComa), views);
     }
 
-    private void pmClick(View v) {
-
+    private List<View> FindNumbers() {
+        return Arrays.asList(
+                findViewById(R.id.btnSeven),
+                findViewById(R.id.btnEight),
+                findViewById(R.id.btnNine),
+                findViewById(R.id.btnFour),
+                findViewById(R.id.btnFive),
+                findViewById(R.id.btnSix),
+                findViewById(R.id.btnOne),
+                findViewById(R.id.btnTwo),
+                findViewById(R.id.btnThree),
+                findViewById(R.id.btnNull));
     }
 
-    private void digitClick(View v) {
-        // задача: ограничить величиной в 10 цифр
-        String digit = ((Button) v).getText().toString();
-        String result = tvResult.getText().toString();
-        if (result.equals("0")) {
-            result = digit;
-        } else {
-            result += digit;
-        }
-        tvResult.setText(result);
+    private List<View> FindOperations() {
+        return Arrays.asList(
+                findViewById(R.id.btnPercent),
+                findViewById(R.id.btnClearE),
+                findViewById(R.id.btnClearAll),
+                findViewById(R.id.btnBackspace),
+                findViewById(R.id.btnInverse),
+                findViewById(R.id.btnSquare),
+                findViewById(R.id.btnSqrt),
+                findViewById(R.id.btnDivide),
+                findViewById(R.id.btnMultiply),
+                findViewById(R.id.btnMinus),
+                findViewById(R.id.btnPlus),
+                findViewById(R.id.btnIs));
     }
 }
