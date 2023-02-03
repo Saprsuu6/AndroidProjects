@@ -4,4 +4,29 @@
     <string name="btnClearE">CE</string>
     <string name="btnClearAll">C</string>
     <string name="btnBackspace">\u232B</string>
+
+    <string name="btnInverse">\u215F\u2093</string>
+    <string name="btnSquare">x\u00B2</string>
+    <string name="btnSqrt">\u221A\u2093</string>
+    <string name="btnDivide">\u00F7</string>
+
+    <string name="btnSeven">7</string>
+    <string name="btnEight">8</string>
+    <string name="btnNine">9</string>
+    <string name="btnMultiply">X</string>
+
+    <string name="btnFour">4</string>
+    <string name="btnFive">5</string>
+    <string name="btnSix">6</string>
+    <string name="btnMinus">-</string>
+
+    <string name="btnOne">1</string>
+    <string name="btnTwo">2</string>
+    <string name="btnThree">3</string>
+    <string name="btnPlus">+</string>
+
+    <string name="btnPlusMinus">±</string>
+    <string name="btnNull">0</string>
+    <string name="btnComa">,</string>
+    <string name="btnIs">=</string>
 </resources>
