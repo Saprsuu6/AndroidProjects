@@ -27,6 +27,6 @@
 
     <string name="btnPlusMinus">±</string>
     <string name="btnNull">0</string>
-    <string name="btnComa">,</string>
+    <string name="btnComa">.</string>
     <string name="btnIs">=</string>
 </resources>

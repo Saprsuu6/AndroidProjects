@@ -4,13 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 
 import java.util.Arrays;
 import java.util.List;
-
-import step.learning.basics.buttons.Buttons;
-import step.learning.basics.views.Views;
 
 public class CalcActivity extends AppCompatActivity {
     private Views views;

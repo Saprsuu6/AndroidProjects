@@ -1,4 +1,4 @@
-package step.learning.basics.views;
+package step.learning.basics;
 
 import android.view.View;
 import android.widget.TextView;

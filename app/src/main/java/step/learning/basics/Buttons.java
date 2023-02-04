@@ -1,13 +1,9 @@
-package step.learning.basics.buttons;
+package step.learning.basics;
 
 import android.view.View;
 import android.widget.Button;
 
-import java.util.Arrays;
 import java.util.List;
-
-import step.learning.basics.R;
-import step.learning.basics.views.Views;
 
 public class Buttons {
     private Views views;
@@ -20,6 +16,8 @@ public class Buttons {
 
     public Buttons(List<View> numbers, List<View> operations,
                    View plusMinus, View coma, Views views) {
+        Math.setViews(views);
+
         this.numbers = numbers;
         this.operations = operations;
         this.views = views;
@@ -55,16 +53,10 @@ public class Buttons {
     }
 
     /**
-     * Change logic +-
+     * Change +-. Logic event
      */
     private void pmClick(View v) {
-        positiveNumber = !positiveNumber;
-
-        String result = !positiveNumber
-                ? "-" + views.getTvResult().getText().toString()
-                : views.getTvResult().getText().toString().replace("-", "");
-
-        views.getTvResult().setText(result);
+        Math.pmLogic(positiveNumber = !positiveNumber);
     }
 
     /**
@@ -76,15 +68,21 @@ public class Buttons {
         }
 
         if (numbersInResult <= 10 || operation == "digit") {
-            if (!views.getTvResult().getText().toString().contains(",") && operation == "digit" || operation == "number") {
+            if (!views.getTvResult().getText().toString().contains(".") && operation == "digit" || operation == "number") {
                 String digit = ((Button) view).getText().toString();
                 String result = views.getTvResult().getText().toString();
+
                 if (result.equals("0") && operation != "digit") {
                     result = digit;
                 } else {
                     result += digit;
                 }
                 views.getTvResult().setText(result);
+
+                if (operation == "number") {
+                    Math.setCurrentNumber(Double.parseDouble(result));
+                    System.out.println(Math.getCurrentNumber());
+                }
             }
         }
     }
