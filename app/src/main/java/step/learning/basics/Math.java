@@ -29,16 +29,16 @@ public class Math {
         if (currentNumber != 0) {
             currentNumber = 1 / currentNumber;
 
-            String result = String.format("%.10f %n", currentNumber);
+            String result = String.format("%.10f", currentNumber);
             System.out.println(result);
             System.out.println(result.endsWith("0"));
-            while(result.endsWith("0")) {
+            while(result.endsWith("0") || result.endsWith(".")) {
                 result = result.substring(0, result.length() - 1);
                 System.out.println(result);
             }
 
             views.getTvHistory().setText(String.format("1/(%s)=", currentNumber));
-            views.getTvResult().setText(String.format(Locale.getDefault(), "%.10f", currentNumber));
+            views.getTvResult().setText(result);
         }
     }
 
