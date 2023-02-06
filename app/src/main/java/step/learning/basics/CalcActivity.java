@@ -54,7 +54,7 @@ public class CalcActivity extends AppCompatActivity {
     /**
      * Call after create activity. Use to change data
      *
-     * @param savedInstanceState daved object
+     * @param savedInstanceState saved object
      */
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
