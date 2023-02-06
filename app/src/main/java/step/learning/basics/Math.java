@@ -29,14 +29,12 @@ public class Math {
 //        return;
 
         if (currentNumber != 0) {
+            String currentNumberClear = GeneralLogicClear(String.format("%.10f", currentNumber));
+            views.getTvHistory().setText(String.format("1/(%s)=", currentNumberClear));
             currentNumber = 1 / currentNumber;
 
             String result = GeneralLogicClear(String.format("%.10f", currentNumber));
-//            while (result.endsWith("0") || result.endsWith(".")) {
-//                result = result.substring(0, result.length() - 1);
-//            }
 
-            views.getTvHistory().setText(String.format("1/(%s)=", currentNumber));
             views.getTvResult().setText(result);
         }
     }
