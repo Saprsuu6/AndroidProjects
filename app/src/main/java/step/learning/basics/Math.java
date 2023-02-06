@@ -22,6 +22,7 @@ public class Math {
     private static Views views;
     private static String signMinus = CalcActivity.context.getString(R.string.btnMinus);
 
+
     public static void Invert() {
 //        Toast
 //                .makeText(getApplicationContext.this, "Cannot divide by zero", Toast.LENGTH_SHORT).show();
@@ -30,10 +31,10 @@ public class Math {
         if (currentNumber != 0) {
             currentNumber = 1 / currentNumber;
 
-            String result = String.format("%.10f", currentNumber);
-            while (result.endsWith("0") || result.endsWith(".")) {
-                result = result.substring(0, result.length() - 1);
-            }
+            String result = GeneralLogicClear(String.format("%.10f", currentNumber));
+//            while (result.endsWith("0") || result.endsWith(".")) {
+//                result = result.substring(0, result.length() - 1);
+//            }
 
             views.getTvHistory().setText(String.format("1/(%s)=", currentNumber));
             views.getTvResult().setText(result);
@@ -43,7 +44,7 @@ public class Math {
     /**
      * Change +-
      */
-    public static void pmLogic(boolean positiveNumber) {
+    public static void pmLogic() {
         if (currentNumber != 0) {
             if (currentNumber > 0) {
                 views.getTvResult().setText(signMinus + views.getTvResult().getText().toString());
@@ -54,5 +55,14 @@ public class Math {
 
             currentNumber *= -1;
         }
+    }
+
+    public static String GeneralLogicClear(String result) {
+        String newResult = result;
+        while (newResult.endsWith("0") || newResult.endsWith(".")) {
+            newResult = newResult.substring(0, newResult.length() - 1);
+        }
+
+        return newResult;
     }
 }

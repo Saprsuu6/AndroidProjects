@@ -13,7 +13,6 @@ public class Buttons {
     private View plusMinus;
     private View coma;
     int numbersInResult = 0;
-    boolean positiveNumber = true;
 
     public Buttons(List<View> numbers, HashMap<View, String> operations, View plusMinus, View coma, Views views) {
         Math.setViews(views);
@@ -74,7 +73,7 @@ public class Buttons {
      * Change +-. Logic event
      */
     private void pmClick(View v) {
-        Math.pmLogic(positiveNumber = !positiveNumber);
+        Math.pmLogic();
     }
 
     /**
