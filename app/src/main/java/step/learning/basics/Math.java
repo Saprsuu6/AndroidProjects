@@ -20,6 +20,7 @@ public class Math {
 
     private static double currentNumber;
     private static Views views;
+    private static String signMinus = CalcActivity.context.getString(R.string.btnMinus);
 
     public static void Invert() {
 //        Toast
@@ -30,11 +31,8 @@ public class Math {
             currentNumber = 1 / currentNumber;
 
             String result = String.format("%.10f", currentNumber);
-            System.out.println(result);
-            System.out.println(result.endsWith("0"));
-            while(result.endsWith("0") || result.endsWith(".")) {
+            while (result.endsWith("0") || result.endsWith(".")) {
                 result = result.substring(0, result.length() - 1);
-                System.out.println(result);
             }
 
             views.getTvHistory().setText(String.format("1/(%s)=", currentNumber));
@@ -48,10 +46,10 @@ public class Math {
     public static void pmLogic(boolean positiveNumber) {
         if (currentNumber != 0) {
             if (currentNumber > 0) {
-                views.getTvResult().setText("-" + views.getTvResult().getText().toString());
+                views.getTvResult().setText(signMinus + views.getTvResult().getText().toString());
             } else if (currentNumber < 0) {
                 views.getTvResult().setText(
-                        views.getTvResult().getText().toString().replace("-", ""));
+                        views.getTvResult().getText().toString().replace(signMinus, ""));
             }
 
             currentNumber *= -1;

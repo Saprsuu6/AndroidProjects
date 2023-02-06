@@ -2,6 +2,7 @@ package step.learning.basics;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ComponentActivity;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -14,11 +15,13 @@ import java.util.List;
 import java.util.Map;
 
 public class CalcActivity extends AppCompatActivity {
+    public static Context context;
     private Views views;
     private Buttons buttons;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        CalcActivity.context = super.getApplicationContext();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calc);
 
