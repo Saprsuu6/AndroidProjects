@@ -1,5 +1,9 @@
 package step.learning.basics;
 
+import android.widget.Toast;
+
+import java.text.DecimalFormat;
+
 public class Math {
     public static void setViews(Views views) {
         Math.views = views;
@@ -16,12 +20,22 @@ public class Math {
     private static double currentNumber;
     private static Views views;
 
+    public static void Invert() {
+//        Toast
+//                .makeText(getApplicationContext.this, "Cannot divide by zero", Toast.LENGTH_SHORT).show();
+//        return;
+
+        if (currentNumber != 0) {
+            currentNumber = 1 / currentNumber;
+            String result = String.format("%.10f %n", currentNumber);
+            views.getTvResult().setText(result);
+        }
+    }
+
     /**
      * Change +-
      */
     public static void pmLogic(boolean positiveNumber) {
-        System.out.println(currentNumber);
-
         if (currentNumber != 0) {
             if (currentNumber > 0) {
                 views.getTvResult().setText("-" + views.getTvResult().getText().toString());
@@ -32,7 +46,5 @@ public class Math {
 
             currentNumber *= -1;
         }
-
-        System.out.println(currentNumber);
     }
 }

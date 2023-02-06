@@ -9,12 +9,13 @@
         <item name="android:layout_height">match_parent</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">24sp</item>
+        <item name="android:gravity">center</item>
 
         <item name="backgroundTint">@null</item>
     </style>
 
     <style name="ButtonOperation" parent="ButtonBase">
         <item name="android:background">@drawable/calc_btn_digit_shape</item>
-        <item name="android:textSize">50sp</item>
+<!--        <item name="android:textSize">50sp</item>-->
     </style>
 </resources>
