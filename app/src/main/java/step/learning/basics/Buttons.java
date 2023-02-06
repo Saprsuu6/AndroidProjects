@@ -66,9 +66,11 @@ public class Buttons {
         switch (operation) {
             case "inverse":
                 Math.Invert();
+                break;
+            case "sqrt":
+                Math.Sqrt();
+                break;
         }
-        // TO DO operation
-        //if (((Button) v).getText().toString() == "")
     }
 
     /**
@@ -91,7 +93,12 @@ public class Buttons {
                 String digit = ((Button) v).getText().toString();
                 String result = views.getTvResult().getText().toString();
 
-                if (result.equals("0") && operation != "digit") {
+                if (result.equals("0") && operation != "digit" || CalcActivity.error) {
+                    if (CalcActivity.error) {
+                        CalcActivity.error = false;
+                        views.getTvHistory().setText("");
+                    }
+
                     result = digit;
                 } else {
                     result += digit;

@@ -16,6 +16,7 @@ import java.util.Map;
 
 public class CalcActivity extends AppCompatActivity {
     public static Context context;
+    public static boolean error;
     private Views views;
     private Buttons buttons;
 
