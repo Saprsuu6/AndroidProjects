@@ -3,6 +3,7 @@ package step.learning.basics;
 import android.widget.Toast;
 
 import java.text.DecimalFormat;
+import java.util.Locale;
 
 public class Math {
     public static void setViews(Views views) {
@@ -27,8 +28,17 @@ public class Math {
 
         if (currentNumber != 0) {
             currentNumber = 1 / currentNumber;
+
             String result = String.format("%.10f %n", currentNumber);
-            views.getTvResult().setText(result);
+            System.out.println(result);
+            System.out.println(result.endsWith("0"));
+            while(result.endsWith("0")) {
+                result = result.substring(0, result.length() - 1);
+                System.out.println(result);
+            }
+
+            views.getTvHistory().setText(String.format("1/(%s)=", currentNumber));
+            views.getTvResult().setText(String.format(Locale.getDefault(), "%.10f", currentNumber));
         }
     }
 
