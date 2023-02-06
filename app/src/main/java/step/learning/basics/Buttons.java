@@ -13,6 +13,8 @@ public class Buttons {
     private View plusMinus;
     private View coma;
     int numbersInResult = 0;
+    public static String signMinus = CalcActivity.context.getString(R.string.btnMinus);
+    public static String signComa = CalcActivity.context.getString(R.string.btnComa);
 
     public Buttons(List<View> numbers, HashMap<View, String> operations, View plusMinus, View coma, Views views) {
         Math.setViews(views);
@@ -85,7 +87,7 @@ public class Buttons {
         }
 
         if (numbersInResult <= 10 || operation == "digit") {
-            if (!views.getTvResult().getText().toString().contains(".") && operation == "digit" || operation == "number") {
+            if (!views.getTvResult().getText().toString().contains(signComa) && operation == "digit" || operation == "number") {
                 String digit = ((Button) v).getText().toString();
                 String result = views.getTvResult().getText().toString();
 

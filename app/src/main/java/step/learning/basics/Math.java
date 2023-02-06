@@ -1,5 +1,6 @@
 package step.learning.basics;
 
+import android.widget.Button;
 import android.widget.Toast;
 
 import java.text.DecimalFormat;
@@ -20,15 +21,15 @@ public class Math {
 
     private static double currentNumber;
     private static Views views;
-    private static String signMinus = CalcActivity.context.getString(R.string.btnMinus);
 
-
+    /**
+     * Invert logic
+     */
     public static void Invert() {
-//        Toast
-//                .makeText(getApplicationContext.this, "Cannot divide by zero", Toast.LENGTH_SHORT).show();
-//        return;
-
-        if (currentNumber != 0) {
+        if (currentNumber == 0) {
+            Toast.makeText(CalcActivity.context, "Cannot divide by zero", Toast.LENGTH_SHORT).show();
+            return;
+        } else {
             String currentNumberClear = GeneralLogicClear(String.format("%.10f", currentNumber));
             views.getTvHistory().setText(String.format("1/(%s)=", currentNumberClear));
             currentNumber = 1 / currentNumber;
@@ -43,12 +44,15 @@ public class Math {
      * Change +-
      */
     public static void pmLogic() {
-        if (currentNumber != 0) {
+        if (currentNumber == 0) {
+            Toast.makeText(CalcActivity.context, "Cannot be negative zero", Toast.LENGTH_SHORT).show();
+            return;
+        } else {
             if (currentNumber > 0) {
-                views.getTvResult().setText(signMinus + views.getTvResult().getText().toString());
+                views.getTvResult().setText(Buttons.signMinus + views.getTvResult().getText().toString());
             } else if (currentNumber < 0) {
                 views.getTvResult().setText(
-                        views.getTvResult().getText().toString().replace(signMinus, ""));
+                        views.getTvResult().getText().toString().replace(Buttons.signMinus, ""));
             }
 
             currentNumber *= -1;
@@ -57,7 +61,7 @@ public class Math {
 
     public static String GeneralLogicClear(String result) {
         String newResult = result;
-        while (newResult.endsWith("0") || newResult.endsWith(".")) {
+        while (newResult.endsWith("0") || newResult.endsWith(Buttons.signComa)) {
             newResult = newResult.substring(0, newResult.length() - 1);
         }
 
