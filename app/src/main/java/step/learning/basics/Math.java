@@ -30,14 +30,7 @@ public class Math {
     //region Operations with one parameter
 
     public static void Sqr() {
-        String currentNumberClear = GeneralLogicClear(String.format(Locale.getDefault(), "%.10f", currentNumber));
-        if (views.getTvHistory().getText().length() == 0) {
-            views.getTvHistory().setText(String.format(Locale.getDefault(), "sqr(%s)", currentNumberClear));
-        } else {
-            String result = String.format(Locale.getDefault(), "sqr(%s)",
-                    String.format(Locale.getDefault(), "sqr(%s)", currentNumber));
-            views.getTvHistory().setText(result);
-        }
+        GeneralLogicSetHistory("sqr(%s)");
         RemoveExtraEqualsSign();
 
         currentNumber = java.lang.Math.pow(currentNumber, 2);
@@ -57,14 +50,7 @@ public class Math {
             GeneralToaster("Can not square root from negative number");
             return;
         } else {
-            String currentNumberClear = GeneralLogicClear(String.format(Locale.getDefault(), "%.10f", currentNumber));
-            if (views.getTvHistory().getText().length() == 0) {
-                views.getTvHistory().setText(String.format(Locale.getDefault(), "√/(%s)", currentNumberClear));
-            } else {
-                String result = String.format(Locale.getDefault(), "√/(%s)",
-                        String.format(Locale.getDefault(), "√/(%s)", currentNumber));
-                views.getTvHistory().setText(result);
-            }
+            GeneralLogicSetHistory("√/(%s)");
             RemoveExtraEqualsSign();
 
             currentNumber = java.lang.Math.sqrt(currentNumber);
@@ -82,14 +68,7 @@ public class Math {
             GeneralToaster("Cannot divide by zero");
             return;
         } else {
-            String currentNumberClear = GeneralLogicClear(String.format(Locale.getDefault(), "%.10f", currentNumber));
-            if (views.getTvHistory().getText().length() == 0) {
-                views.getTvHistory().setText(String.format(Locale.getDefault(), "1/(%s)", currentNumberClear));
-            } else {
-                String result = String.format(Locale.getDefault(), "1/(%s)",
-                        String.format(Locale.getDefault(), "1/(%s)", currentNumber));
-                views.getTvHistory().setText(result);
-            }
+            GeneralLogicSetHistory("1/(%s)");
             RemoveExtraEqualsSign();
 
             currentNumber = 1 / currentNumber;
@@ -118,11 +97,26 @@ public class Math {
         }
     }
 
+    private static void GeneralLogicSetHistory(String formatStringPattern) {
+        String currentNumberClear = GeneralLogicClear(String.format(Locale.getDefault(), "%.10f", currentNumber));
+        if (views.getTvHistory().getText().length() == 0) {
+            views.getTvHistory().setText(String.format(Locale.getDefault(), formatStringPattern, currentNumberClear));
+        } else {
+            String history = views.getTvHistory().getText().toString();
+            System.out.println(history);
+            System.out.println(currentNumberClear);
+
+            String result = String.format(Locale.getDefault(), formatStringPattern, views.getTvHistory().getText());
+            views.getTvHistory().setText(result);
+        }
+    }
+
     //endregion
 
     public static void GeneralToaster(String message) {
         Toast.makeText(CalcActivity.context, message, Toast.LENGTH_SHORT).show();
 
+        long[] vibrationPattern = {0, 200, 100, 200};
         Vibrator vibrator;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             VibratorManager vibratorManager = (VibratorManager) CalcActivity.context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE);
@@ -132,9 +126,11 @@ public class Math {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            vibrator.vibrate(VibrationEffect.createOneShot(300, VibrationEffect.DEFAULT_AMPLITUDE));
+            //vibrator.vibrate(VibrationEffect.createOneShot(300, VibrationEffect.DEFAULT_AMPLITUDE));
+            vibrator.vibrate(VibrationEffect.createWaveform(vibrationPattern, -1));
         } else {
-            vibrator.vibrate(300);
+            //vibrator.vibrate(300);
+            vibrator.vibrate(vibrationPattern, -1);
         }
 
         views.getTvHistory().setText(message);
@@ -153,7 +149,6 @@ public class Math {
     public static String GeneralLogicClear(String result) {
         while (result.endsWith("0") || result.endsWith(Buttons.signComa)) {
             result = result.substring(0, result.length() - 1);
-            System.out.println(result);
             if (result.length() == 1) break;
         }
 
