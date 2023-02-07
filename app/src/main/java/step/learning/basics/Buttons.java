@@ -70,6 +70,9 @@ public class Buttons {
             case "sqrt":
                 Math.Sqrt();
                 break;
+            case "square":
+                Math.Sqr();
+                break;
         }
     }
 

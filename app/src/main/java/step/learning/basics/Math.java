@@ -1,5 +1,10 @@
 package step.learning.basics;
 
+import android.content.Context;
+import android.os.Build;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
+import android.os.VibratorManager;
 import android.widget.Toast;
 
 import java.util.Locale;
@@ -24,6 +29,26 @@ public class Math {
 
     //region Operations with one parameter
 
+    public static void Sqr() {
+        String currentNumberClear = GeneralLogicClear(String.format(Locale.getDefault(), "%.10f", currentNumber));
+        if (views.getTvHistory().getText().length() == 0) {
+            views.getTvHistory().setText(String.format(Locale.getDefault(), "sqr(%s)", currentNumberClear));
+        } else {
+            String result = String.format(Locale.getDefault(), "sqr(%s)",
+                    String.format(Locale.getDefault(), "sqr(%s)", currentNumber));
+            views.getTvHistory().setText(result);
+        }
+        RemoveExtraEqualsSign();
+
+        currentNumber = java.lang.Math.pow(currentNumber, 2);
+
+        String result = GeneralLogicClear(String.format(Locale.getDefault(), "%.10f", currentNumber));
+        views.getTvResult().setText(result);
+    }
+
+    /**
+     * Sqrt logic
+     */
     public static void Sqrt() {
         if (currentNumber == 0) {
             GeneralToaster("Can not square root from zero");
@@ -34,9 +59,10 @@ public class Math {
         } else {
             String currentNumberClear = GeneralLogicClear(String.format(Locale.getDefault(), "%.10f", currentNumber));
             if (views.getTvHistory().getText().length() == 0) {
-                views.getTvHistory().setText(String.format(Locale.getDefault(), "√/(%s)=", currentNumberClear));
+                views.getTvHistory().setText(String.format(Locale.getDefault(), "√/(%s)", currentNumberClear));
             } else {
-                String result = String.format(Locale.getDefault(), "√/(%s)", views.getTvHistory().getText());
+                String result = String.format(Locale.getDefault(), "√/(%s)",
+                        String.format(Locale.getDefault(), "√/(%s)", currentNumber));
                 views.getTvHistory().setText(result);
             }
             RemoveExtraEqualsSign();
@@ -60,7 +86,8 @@ public class Math {
             if (views.getTvHistory().getText().length() == 0) {
                 views.getTvHistory().setText(String.format(Locale.getDefault(), "1/(%s)", currentNumberClear));
             } else {
-                String result = String.format(Locale.getDefault(), "1/(%s)", views.getTvHistory().getText());
+                String result = String.format(Locale.getDefault(), "1/(%s)",
+                        String.format(Locale.getDefault(), "1/(%s)", currentNumber));
                 views.getTvHistory().setText(result);
             }
             RemoveExtraEqualsSign();
@@ -96,6 +123,20 @@ public class Math {
     public static void GeneralToaster(String message) {
         Toast.makeText(CalcActivity.context, message, Toast.LENGTH_SHORT).show();
 
+        Vibrator vibrator;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            VibratorManager vibratorManager = (VibratorManager) CalcActivity.context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE);
+            vibrator = vibratorManager.getDefaultVibrator();
+        } else {
+            vibrator = (Vibrator) CalcActivity.context.getSystemService(Context.VIBRATOR_SERVICE);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vibrator.vibrate(VibrationEffect.createOneShot(300, VibrationEffect.DEFAULT_AMPLITUDE));
+        } else {
+            vibrator.vibrate(300);
+        }
+
         views.getTvHistory().setText(message);
         views.getTvResult().setText("Input error");
 
@@ -110,11 +151,12 @@ public class Math {
     }
 
     public static String GeneralLogicClear(String result) {
-        String newResult = result;
-        while (newResult.endsWith("0") || newResult.endsWith(Buttons.signComa)) {
-            newResult = newResult.substring(0, newResult.length() - 1);
+        while (result.endsWith("0") || result.endsWith(Buttons.signComa)) {
+            result = result.substring(0, result.length() - 1);
+            System.out.println(result);
+            if (result.length() == 1) break;
         }
 
-        return newResult;
+        return result;
     }
 }
