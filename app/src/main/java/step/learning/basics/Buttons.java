@@ -14,6 +14,7 @@ public class Buttons {
     private HashMap<View, String> operations;
     private View[] servicesButtons;
     int numbersInResult = 0;
+    private String lastOperation;
     public static String signMinus = CalcActivity.context.getString(R.string.btnMinus);
     public static String signComa = CalcActivity.context.getString(R.string.btnComa);
     private Vibrator vibrator = new Vibrator();
@@ -48,7 +49,7 @@ public class Buttons {
             operations_view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    operationClick(view, operations.get(operations_view));
+                    operationClick(operations.get(operations_view));
                 }
             });
         }
@@ -68,7 +69,7 @@ public class Buttons {
         // endregion
     }
 
-    private void operationClick(View v, String operation) {
+    private void operationClick(String operation) {
         System.out.println(operation);
         try {
             switch (operation) {
@@ -83,17 +84,26 @@ public class Buttons {
                     break;
                 case "minus":
                     Math.OperationClick("-");
+                    lastOperation = "minus";
                     break;
                 case "plus":
                     Math.OperationClick("+");
+                    lastOperation = "plus";
                     break;
                 case "multiply":
                     Math.OperationClick("X");
+                    lastOperation = "multiply";
                     break;
                 case "divide":
                     Math.OperationClick("÷");
+                    lastOperation = "divide";
                     break;
                 case "equal":
+                    if (views.getTvHistory().getText().toString().contains("=")) {
+                        System.out.println(lastOperation);
+                        operationClick(lastOperation);
+                    }
+
                     double result = Math.Equal();
                     Show(result);
                     break;
@@ -124,6 +134,8 @@ public class Buttons {
             if (CalcActivity.needClearRes) CalcActivity.needClearRes = false;
             Math.setCurrentNumber(0);
             views.getTvResult().setText("0");
+
+            lastOperation = null;
         }
     }
 
@@ -182,6 +194,7 @@ public class Buttons {
                     CalcActivity.needClearRes = false;
                     views.getTvResult().setText("0");
                     Math.setCurrentNumber(0);
+                    lastOperation = null;
                 }
 
                 if (CalcActivity.needClearAll) {
@@ -189,6 +202,7 @@ public class Buttons {
                     views.getTvHistory().setText("");
                     views.getTvResult().setText("0");
                     Math.setCurrentNumber(0);
+                    lastOperation = null;
                 }
 
                 String digit = ((Button) v).getText().toString();

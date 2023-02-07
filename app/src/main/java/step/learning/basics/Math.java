@@ -22,15 +22,17 @@ public class Math {
         Math.currentNumber = currentNumber;
     }
 
+    public static String getOperation() {
+        return operation;
+    }
+
     public static double getCurrentNumber() {
         return currentNumber;
     }
 
     private static double currentNumber;
     private static Views views;
-
     private static double argument1;
-
     private static String operation;
 
     //region Operations with one parameter
@@ -131,10 +133,10 @@ public class Math {
     }
 
     public static double Equal() throws Exception {
-        views.getTvHistory().append(" " + GeneralLogicClear(String.format(Locale.getDefault(), "%.10f", currentNumber)) + " =");
+        if (!views.getTvHistory().getText().toString().contains("0 =")) {
+            views.getTvHistory().append(" " + GeneralLogicClear(String.format(Locale.getDefault(), "%.10f", currentNumber)) + " =");
+        }
         CalcActivity.needClearAll = true;
-
-        System.out.println(operation);
 
         switch (operation) {
             case "+":
