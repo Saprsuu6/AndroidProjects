@@ -97,10 +97,33 @@ public class Buttons {
                     double result = Math.Equal();
                     Show(result);
                     break;
+                case "clearE":
+                    ClearE();
+                    break;
+                case "clearAll":
+                    ClearAll();
+                    break;
             }
         } catch (Exception e) {
             vibrator.run();
             System.out.println(e.getMessage());
+        }
+    }
+
+    private void ClearAll() {
+        if (views.getTvHistory().getText() != "") {
+            if (CalcActivity.needClearAll) CalcActivity.needClearAll = false;
+            views.getTvHistory().setText("");
+
+            ClearE();
+        }
+    }
+
+    private void ClearE() {
+        if (views.getTvResult().getText() != "0" && Math.getCurrentNumber() != 0) {
+            if (CalcActivity.needClearRes) CalcActivity.needClearRes = false;
+            Math.setCurrentNumber(0);
+            views.getTvResult().setText("0");
         }
     }
 
@@ -155,8 +178,8 @@ public class Buttons {
 
         if (numbersInResult <= 10 || operation == "digit") {
             if (!views.getTvResult().getText().toString().contains(signComa) && operation == "digit" || operation == "number") {
-                if (CalcActivity.needClear) {
-                    CalcActivity.needClear = false;
+                if (CalcActivity.needClearRes) {
+                    CalcActivity.needClearRes = false;
                     views.getTvResult().setText("0");
                     Math.setCurrentNumber(0);
                 }

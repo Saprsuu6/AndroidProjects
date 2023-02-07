@@ -30,6 +30,7 @@ public class Math {
     private static Views views;
 
     private static double argument1;
+
     private static String operation;
 
     //region Operations with one parameter
@@ -121,7 +122,7 @@ public class Math {
         String result = views.getTvResult().getText().toString();
         argument1 = GetArgument(result);
         views.getTvHistory().setText(result + " " + operation);
-        CalcActivity.needClear = true;
+        CalcActivity.needClearRes = true;
     }
     // endregion
 
@@ -132,6 +133,8 @@ public class Math {
     public static double Equal() throws Exception {
         views.getTvHistory().append(" " + GeneralLogicClear(String.format(Locale.getDefault(), "%.10f", currentNumber)) + " =");
         CalcActivity.needClearAll = true;
+
+        System.out.println(operation);
 
         switch (operation) {
             case "+":
@@ -146,9 +149,9 @@ public class Math {
                     throw new Exception("Can not square root from zero");
                 }
                 return argument1 / currentNumber;
+            default:
+                return 0;
         }
-
-        return 0;
     }
 
     public static void GeneralToaster(String message) {

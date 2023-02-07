@@ -18,7 +18,7 @@ import java.util.Map;
 public class CalcActivity extends AppCompatActivity {
     public static Context context;
     public static boolean error;
-    public static boolean needClear = false;
+    public static boolean needClearRes = false;
     public static boolean needClearAll = false;
     private Views views;
     private Buttons buttons;
