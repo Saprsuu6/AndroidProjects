@@ -16,6 +16,7 @@ public class Buttons {
     int numbersInResult = 0;
     public static String signMinus = CalcActivity.context.getString(R.string.btnMinus);
     public static String signComa = CalcActivity.context.getString(R.string.btnComa);
+    private Vibrator vibrator = new Vibrator();
 
     public Buttons(List<View> numbers, HashMap<View, String> operations, View[] servicesButtons, Views views) {
         Math.setViews(views);
@@ -98,6 +99,7 @@ public class Buttons {
                     break;
             }
         } catch (Exception e) {
+            vibrator.run();
             System.out.println(e.getMessage());
         }
     }
@@ -138,6 +140,7 @@ public class Buttons {
         try {
             Math.pmLogic();
         } catch (Exception e) {
+            vibrator.run();
             System.out.println(e.getMessage());
         }
     }

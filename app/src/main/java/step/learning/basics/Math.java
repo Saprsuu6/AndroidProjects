@@ -154,23 +154,6 @@ public class Math {
     public static void GeneralToaster(String message) {
         Toast.makeText(CalcActivity.context, message, Toast.LENGTH_SHORT).show();
 
-        long[] vibrationPattern = {0, 200, 100, 200};
-        Vibrator vibrator;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            VibratorManager vibratorManager = (VibratorManager) CalcActivity.context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE);
-            vibrator = vibratorManager.getDefaultVibrator();
-        } else {
-            vibrator = (Vibrator) CalcActivity.context.getSystemService(Context.VIBRATOR_SERVICE);
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            //vibrator.vibrate(VibrationEffect.createOneShot(300, VibrationEffect.DEFAULT_AMPLITUDE));
-            vibrator.vibrate(VibrationEffect.createWaveform(vibrationPattern, -1));
-        } else {
-            //vibrator.vibrate(300);
-            vibrator.vibrate(vibrationPattern, -1);
-        }
-
         views.getTvHistory().setText(message);
         views.getTvResult().setText("Input error");
 

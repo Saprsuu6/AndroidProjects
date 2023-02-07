@@ -64,6 +64,7 @@ public class CalcActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
         views.getTvHistory().setText(savedInstanceState.getCharSequence("history"));
         views.getTvResult().setText(savedInstanceState.getCharSequence("result"));
+        Log.d("onSaveInstance", "Data was rad");
     }
 
     private List<View> FindNumbers() {
