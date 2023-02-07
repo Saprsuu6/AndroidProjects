@@ -199,7 +199,7 @@
                 android:text="@string/btnComa" />
 
             <Button
-                android:id="@+id/btnIs"
+                android:id="@+id/btnEqual"
                 style="@style/ButtonBase"
                 android:backgroundTint="#AA25C1"
                 android:text="@string/btnIs" />

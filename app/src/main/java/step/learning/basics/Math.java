@@ -5,6 +5,8 @@ import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.os.VibratorManager;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import java.util.Locale;
@@ -27,6 +29,9 @@ public class Math {
     private static double currentNumber;
     private static Views views;
 
+    private static double argument1;
+    private static String operation;
+
     //region Operations with one parameter
 
     public static void Sqr() {
@@ -42,13 +47,13 @@ public class Math {
     /**
      * Sqrt logic
      */
-    public static void Sqrt() {
+    public static void Sqrt() throws Exception {
         if (currentNumber == 0) {
             GeneralToaster("Can not square root from zero");
-            return;
+            throw new Exception("Can not square root from zero");
         } else if (currentNumber < 0) {
             GeneralToaster("Can not square root from negative number");
-            return;
+            throw new Exception("Can not square root from negative number");
         } else {
             GeneralLogicSetHistory("√/(%s)");
             RemoveExtraEqualsSign();
@@ -63,10 +68,10 @@ public class Math {
     /**
      * Invert logic
      */
-    public static void Invert() {
+    public static void Invert() throws Exception {
         if (currentNumber == 0) {
             GeneralToaster("Cannot divide by zero");
-            return;
+            throw new Exception("Cannot divide by zero");
         } else {
             GeneralLogicSetHistory("1/(%s)");
             RemoveExtraEqualsSign();
@@ -81,10 +86,10 @@ public class Math {
     /**
      * Change +-
      */
-    public static void pmLogic() {
+    public static void pmLogic() throws Exception {
         if (currentNumber == 0) {
             GeneralToaster("Cannot be negative zero");
-            return;
+            throw new Exception("Cannot be negative zero");
         } else {
             if (currentNumber > 0) {
                 views.getTvResult().setText(Buttons.signMinus + views.getTvResult().getText().toString());
@@ -102,16 +107,49 @@ public class Math {
         if (views.getTvHistory().getText().length() == 0) {
             views.getTvHistory().setText(String.format(Locale.getDefault(), formatStringPattern, currentNumberClear));
         } else {
-            String history = views.getTvHistory().getText().toString();
-            System.out.println(history);
-            System.out.println(currentNumberClear);
-
-            String result = String.format(Locale.getDefault(), formatStringPattern, views.getTvHistory().getText());
+            String history = views.getTvHistory().getText().toString().replaceAll("\\d+", currentNumberClear);
+            String result = String.format(Locale.getDefault(), formatStringPattern, history);
             views.getTvHistory().setText(result);
         }
     }
 
     //endregion
+
+    // region Operation with two parameters
+    public static void OperationClick(String operation) {
+        Math.operation = operation;
+        String result = views.getTvResult().getText().toString();
+        argument1 = GetArgument(result);
+        views.getTvHistory().setText(result + " " + operation);
+        CalcActivity.needClear = true;
+    }
+    // endregion
+
+    private static double GetArgument(String resultText) {
+        return Double.parseDouble(resultText.replace(Buttons.signMinus, "-"));
+    }
+
+    public static double Equal() throws Exception {
+        views.getTvHistory().append(" " + GeneralLogicClear(String.format(Locale.getDefault(), "%.10f", currentNumber)) + " =");
+        CalcActivity.needClearAll = true;
+
+        switch (operation) {
+            case "+":
+                return argument1 + currentNumber;
+            case "-":
+                return argument1 - currentNumber;
+            case "X":
+                return argument1 * currentNumber;
+            case "÷":
+                if (currentNumber == 0) {
+                    GeneralToaster("Can not square root from zero");
+                    throw new Exception("Can not square root from zero");
+                }
+                return argument1 / currentNumber;
+        }
+
+        return 0;
+    }
 
     public static void GeneralToaster(String message) {
         Toast.makeText(CalcActivity.context, message, Toast.LENGTH_SHORT).show();
@@ -149,6 +187,7 @@ public class Math {
     public static String GeneralLogicClear(String result) {
         while (result.endsWith("0") || result.endsWith(Buttons.signComa)) {
             result = result.substring(0, result.length() - 1);
+            if (!result.contains(Buttons.signComa)) break;
             if (result.length() == 1) break;
         }
 

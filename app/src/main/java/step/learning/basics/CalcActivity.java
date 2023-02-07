@@ -18,6 +18,8 @@ import java.util.Map;
 public class CalcActivity extends AppCompatActivity {
     public static Context context;
     public static boolean error;
+    public static boolean needClear = false;
+    public static boolean needClearAll = false;
     private Views views;
     private Buttons buttons;
 
@@ -31,12 +33,12 @@ public class CalcActivity extends AppCompatActivity {
         views.getTvHistory().setText("");
         views.getTvResult().setText("0");
 
-// alternative to findViewById
-//        for (int i = 0; i < 10; i++) {
-//            findViewById(getResources().getIdentifier("btn" + i, "id", getPackageName());
-//        }
+        View[] serviceButtons = new View[]{
+                findViewById(R.id.btnPlusMinus),
+                findViewById(R.id.btnComa),
+                findViewById(R.id.btnBackspace)};
 
-        buttons = new Buttons(FindNumbers(), FindOperations(), findViewById(R.id.btnPlusMinus), findViewById(R.id.btnComa), views);
+        buttons = new Buttons(FindNumbers(), FindOperations(), serviceButtons, views);
     }
 
     /**
@@ -73,7 +75,6 @@ public class CalcActivity extends AppCompatActivity {
             put(findViewById(R.id.btnPercent), "percent");
             put(findViewById(R.id.btnClearE), "clearE");
             put(findViewById(R.id.btnClearAll), "clearAll");
-            put(findViewById(R.id.btnBackspace), "backSpace");
             put(findViewById(R.id.btnInverse), "inverse");
             put(findViewById(R.id.btnSquare), "square");
             put(findViewById(R.id.btnSqrt), "sqrt");
@@ -81,7 +82,7 @@ public class CalcActivity extends AppCompatActivity {
             put(findViewById(R.id.btnMultiply), "multiply");
             put(findViewById(R.id.btnMinus), "minus");
             put(findViewById(R.id.btnPlus), "plus");
-            put(findViewById(R.id.btnIs), "is");
+            put(findViewById(R.id.btnEqual), "equal");
         }};
     }
 }

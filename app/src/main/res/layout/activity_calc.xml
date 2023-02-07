@@ -213,7 +213,7 @@
                 android:text="@string/btnComa" />
 
             <Button
-                android:id="@+id/btnIs"
+                android:id="@+id/btnEqual"
                 style="@style/ButtonBase"
                 android:text="@string/btnIs" />
         </TableRow>
