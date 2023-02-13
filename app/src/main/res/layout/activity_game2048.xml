@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_2048"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Game2048.Game2048Activity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"
+        android:background="@color/main_2048">
+
+        <TextView
+            style="@style/Game2048Header"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/game_2048"
+            android:gravity="center"
+            android:text="Welcome to 2048!!!"
+            android:textColor="@color/black" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="10dp"
+        android:layout_weight="2"
+        android:background="@color/main_2048"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/Game2048TextStyles"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:backgroundTint="@color/game_2048"
+            android:text="2048"
+            android:textSize="30dp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/score"
+                    style="@style/Game2048TextStyles"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/score_best"
+                    android:text="@string/btnScore" />
+
+                <TextView
+                    android:id="@+id/bestScore"
+                    style="@style/Game2048TextStyles"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/score_best"
+                    android:text="@string/btnBestScore" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/newGame"
+                    style="@style/Game2048TextStyles"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/new_undo"
+                    android:text="NEW" />
+
+                <Button
+                    android:id="@+id/best"
+                    style="@style/Game2048TextStyles"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/new_undo"
+                    android:text="UNDO" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/btn_infoMainText"
+            style="@style/Game2048TextStylesInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/btn_infoMainText" />
+
+        <TextView
+            android:id="@+id/btn_infoGoal"
+            style="@style/Game2048TextStylesInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/btn_infoGoal" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="20dp"
+        android:layout_weight="4"
+        android:background="@drawable/game2048_btn_shape"
+        android:backgroundTint="#A49380"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <TextView
+                style="@style/Game2048ButtonStyle"
+                tools:text="Empty" />
+
+            <TextView
+                style="@style/Game2048ButtonStyle"
+                tools:text="Empty" />
+
+            <TextView
+                style="@style/Game2048ButtonStyle"
+                tools:text="Empty" />
+
+            <TextView
+                style="@style/Game2048ButtonStyle"
+                tools:text="Empty" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <TextView
+                style="@style/Game2048ButtonStyle"
+                tools:text="Empty" />
+
+            <TextView
+                style="@style/Game2048TextStyles"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:backgroundTint="#BEAFA0"
+                android:text="Empty" />
+
+            <TextView
+                style="@style/Game2048ButtonStyle"
+                tools:text="Empty" />
+
+            <TextView
+                style="@style/Game2048ButtonStyle"
+                tools:text="Empty" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <TextView
+                style="@style/Game2048ButtonStyle"
+                tools:text="Empty" />
+
+            <TextView
+                style="@style/Game2048ButtonStyle"
+                tools:text="Empty" />
+
+            <TextView
+                style="@style/Game2048ButtonStyle"
+                tools:text="Empty" />
+
+            <TextView
+                style="@style/Game2048ButtonStyle"
+                tools:text="Empty" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <TextView
+                style="@style/Game2048ButtonStyle"
+                tools:text="Empty" />
+
+            <TextView
+                style="@style/Game2048ButtonStyle"
+                tools:text="Empty" />
+
+            <TextView
+                style="@style/Game2048ButtonStyle"
+                tools:text="Empty" />
+
+            <TextView
+                style="@style/Game2048ButtonStyle"
+                tools:text="Empty" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

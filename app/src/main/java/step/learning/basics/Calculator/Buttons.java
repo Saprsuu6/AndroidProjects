@@ -1,4 +1,4 @@
-package step.learning.basics;
+package step.learning.basics.Calculator;
 
 import android.view.View;
 import android.widget.Button;
@@ -6,7 +6,8 @@ import android.widget.Button;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.ExecutionException;
+
+import step.learning.basics.R;
 
 public class Buttons {
     private Views views;

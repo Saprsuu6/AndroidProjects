@@ -10,4 +10,8 @@
     <color name="calc_btn_back">#E91E63</color>
     <color name="calc_btn_numbers_back">#7A1034</color>
     <color name="calc_btn_stroke">#550C25</color>
+    <color name="game_2048">#ECCB5F</color>
+    <color name="score_best">#3C3A33</color>
+    <color name="new_undo">#F55E3D</color>
+    <color name="main_2048">#FFF7EE</color>
 </resources>

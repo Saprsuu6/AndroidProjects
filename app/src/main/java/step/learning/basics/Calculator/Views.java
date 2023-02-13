@@ -1,4 +1,4 @@
-package step.learning.basics;
+package step.learning.basics.Calculator;
 
 import android.view.View;
 import android.widget.TextView;

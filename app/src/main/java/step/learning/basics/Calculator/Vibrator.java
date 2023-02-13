@@ -1,9 +1,11 @@
-package step.learning.basics;
+package step.learning.basics.Calculator;
 
 import android.content.Context;
 import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.VibratorManager;
+
+import step.learning.basics.Calculator.CalcActivity;
 
 public class Vibrator {
     private android.os.Vibrator vibrator;

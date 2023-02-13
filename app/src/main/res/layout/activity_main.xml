@@ -37,6 +37,13 @@
             android:text="@string/btn_calc_text" />
 
         <Button
+            android:id="@+id/Button2048"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="25dp"
+            android:text="@string/btn_2048" />
+
+        <Button
             android:id="@+id/exitButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

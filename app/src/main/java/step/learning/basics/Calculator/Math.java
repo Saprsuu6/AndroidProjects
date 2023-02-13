@@ -1,17 +1,8 @@
-package step.learning.basics;
+package step.learning.basics.Calculator;
 
-import android.content.Context;
-import android.os.Build;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
-import android.os.VibratorManager;
-import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class Math {
     public static void setViews(Views views) {

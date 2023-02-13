@@ -1,8 +1,7 @@
-package step.learning.basics;
+package step.learning.basics.Calculator;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ComponentActivity;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -12,8 +11,8 @@ import android.view.View;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+
+import step.learning.basics.R;
 
 public class CalcActivity extends AppCompatActivity {
     public static Context context;
