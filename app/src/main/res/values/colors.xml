@@ -19,7 +19,6 @@
     <color name="new_undo">#F55E3D</color>
     <color name="main_2048">#FFF7EE</color>
 
-    <color name="game_bg_main">#BFAFA0</color>
     <color name="game_bg_0">#BFAFA0</color>
     <color name="game_bg_2">#ECE2CA</color>
     <color name="game_bg_4">#EDE1C8</color>
