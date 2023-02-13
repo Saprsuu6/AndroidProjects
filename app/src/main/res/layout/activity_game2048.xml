@@ -139,21 +139,24 @@
             android:layout_weight="1">
 
             <TextView
-                style="@style/Game2048ButtonStyle"
-                tools:text="Empty" />
+                android:id="@+id/cell00"
+                style="@style/Cell_0"
+                tools:text="0" />
 
             <TextView
-                style="@style/Game2048ButtonStyle"
-                tools:text="Empty" />
+                android:id="@+id/cell01"
+                style="@style/Cell_2"
+                tools:text="2" />
 
             <TextView
-                style="@style/Game2048ButtonStyle"
-                tools:text="Empty" />
+                android:id="@+id/cell02"
+                style="@style/Cell_4"
+                tools:text="4" />
 
             <TextView
-                style="@style/Game2048ButtonStyle"
-                tools:text="Empty" />
-
+                android:id="@+id/cell03"
+                style="@style/Cell_8"
+                tools:text="8" />
         </LinearLayout>
 
         <LinearLayout
@@ -162,25 +165,24 @@
             android:layout_weight="1">
 
             <TextView
-                style="@style/Game2048ButtonStyle"
-                tools:text="Empty" />
+                android:id="@+id/cell10"
+                style="@style/Cell_16"
+                tools:text="16" />
 
             <TextView
-                style="@style/Game2048TextStyles"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:backgroundTint="#BEAFA0"
-                android:text="Empty" />
+                android:id="@+id/cell11"
+                style="@style/Cell_16"
+                android:text="32" />
 
             <TextView
-                style="@style/Game2048ButtonStyle"
-                tools:text="Empty" />
+                android:id="@+id/cell12"
+                style="@style/Cell_16"
+                tools:text="64" />
 
             <TextView
-                style="@style/Game2048ButtonStyle"
-                tools:text="Empty" />
-
+                android:id="@+id/cell13"
+                style="@style/Cell_16"
+                tools:text="128" />
         </LinearLayout>
 
         <LinearLayout
@@ -189,21 +191,24 @@
             android:layout_weight="1">
 
             <TextView
-                style="@style/Game2048ButtonStyle"
-                tools:text="Empty" />
+                android:id="@+id/cell20"
+                style="@style/Cell_16"
+                tools:text="256" />
 
             <TextView
-                style="@style/Game2048ButtonStyle"
-                tools:text="Empty" />
+                android:id="@+id/cell21"
+                style="@style/Cell_16"
+                tools:text="512" />
 
             <TextView
-                style="@style/Game2048ButtonStyle"
-                tools:text="Empty" />
+                android:id="@+id/cell22"
+                style="@style/Cell_16"
+                tools:text="1024" />
 
             <TextView
-                style="@style/Game2048ButtonStyle"
-                tools:text="Empty" />
-
+                android:id="@+id/cell23"
+                style="@style/Cell_16"
+                tools:text="2048" />
         </LinearLayout>
 
         <LinearLayout
@@ -212,21 +217,24 @@
             android:layout_weight="1">
 
             <TextView
-                style="@style/Game2048ButtonStyle"
-                tools:text="Empty" />
+                android:id="@+id/cell30"
+                style="@style/Cell_0"
+                tools:text="0" />
 
             <TextView
-                style="@style/Game2048ButtonStyle"
-                tools:text="Empty" />
+                android:id="@+id/cell31"
+                style="@style/Cell_2"
+                tools:text="2" />
 
             <TextView
-                style="@style/Game2048ButtonStyle"
-                tools:text="Empty" />
+                android:id="@+id/cell32"
+                style="@style/Cell_4"
+                tools:text="4" />
 
             <TextView
-                style="@style/Game2048ButtonStyle"
-                tools:text="Empty" />
-
+                android:id="@+id/cell33"
+                style="@style/Cell_8"
+                tools:text="8" />
         </LinearLayout>
 
     </LinearLayout>
