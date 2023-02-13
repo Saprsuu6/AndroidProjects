@@ -1,5 +1,6 @@
 package step.learning.basics.Game2048;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.animation.Animation;
@@ -15,16 +16,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import step.learning.basics.Calculator.CalcActivity;
 import step.learning.basics.R;
 
 public class Game2048Activity extends AppCompatActivity {
-    private int[][] cells = new int[4][4];
-    private TextView[][] tvCells = new TextView[4][4];
-    private final Random random = new Random();
+    public static Context context;
     private Animation spawnAnimation;
+    private Game2048Logic logic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Game2048Activity.context = this.getApplicationContext();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game2048);
 
@@ -32,29 +35,18 @@ public class Game2048Activity extends AppCompatActivity {
         spawnAnimation = AnimationUtils.loadAnimation(this, R.anim.spawn_cell);
         spawnAnimation.reset();
 
-        for (int i = 0; i < 4; ++i) {
-            for (int j = 0; j < 4; ++j) {
-                tvCells[i][j] = findViewById(   // идентификаторы ячеек "cell" + i + j
-                        getResources().getIdentifier(
-                                "cell" + i + j,
-                                "id",
-                                getPackageName()
-                        )
-                );
-            }
-        }
-
+        logic = new Game2048Logic(FindTextViews());
         findViewById(R.id.layout_2048).setOnTouchListener(new OnSwipeListener(Game2048Activity.this) {
             @Override
             public void OnSwipeRight() {
-                if (MoveRight()) SpawnCell();
+                if (logic.MoveRight()) logic.SpawnCell(spawnAnimation);
                 else
                     Toast.makeText(Game2048Activity.this, "No Right Move", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void OnSwipeLeft() {
-                if (MoveLeft()) SpawnCell();
+                if (logic.MoveLeft()) logic.SpawnCell(spawnAnimation);
                 else
                     Toast.makeText(Game2048Activity.this, "No Left Move", Toast.LENGTH_SHORT).show();
             }
@@ -70,104 +62,27 @@ public class Game2048Activity extends AppCompatActivity {
             }
         });
 
-        SpawnCell();
+        logic.SpawnCell(spawnAnimation);
     }
 
-    // добавление новой ячейки (с вероятностью 0.9 - 2, 0.1 - 4)
-    private boolean SpawnCell() {
-        // собираем все пустые ячейки
-        List<Integer> freeCells = new ArrayList<>();
+    /**
+     * Code initialize 2048 buttons
+     */
+    private TextView[][] FindTextViews() {
+        TextView[][] tvCells = new TextView[4][4];
+
         for (int i = 0; i < 4; ++i) {
             for (int j = 0; j < 4; ++j) {
-                if (cells[i][j] == 0) {
-                    freeCells.add(i * 10 + j);   // сохраняем координаты свободной ячейки одним числом
-                }
-            }
-        }
-        // проверяем, есть ли вообще пустые ячейки
-        int cnt = freeCells.size();
-        if (cnt == 0) return false;
-        // генерируем случайный индекс
-        int rnd = random.nextInt(cnt);
-        // генерируем значение для ячейки
-        int x = freeCells.get(rnd) / 10;   // разделяем координаты сохраненной ячейки
-        int y = freeCells.get(rnd) % 10;
-        cells[x][y] = random.nextInt(10) == 0 ? 4 : 2;
-        // запускаем анимацию на измененной ячейке
-        tvCells[x][y].startAnimation(spawnAnimation);
-        // запускаем перерисовку поля
-        ShowField();
-        return true;
-    }
-
-    // отображение поля (ячеек) после пересчета их значений
-    private void ShowField() {
-        Resources resources = getResources();
-        for (int i = 0; i < 4; ++i) {
-            for (int j = 0; j < 4; ++j) {
-                String value = cells[i][j] > 0 ? String.valueOf(cells[i][j]) : "";
-
-                tvCells[i][j].setText(String.valueOf(value));
-                tvCells[i][j].setTextAppearance(      // R.style.Cell_2 ) ;
-                        resources.getIdentifier(
-                                "Cell_" + cells[i][j],
-                                "style",
+                tvCells[i][j] = this.findViewById(   // идентификаторы ячеек "cell" + i + j
+                        getResources().getIdentifier(
+                                "cell" + i + j,
+                                "id",
                                 getPackageName()
-                        ));
-                tvCells[i][j].setBackgroundColor(
-                        resources.getColor(
-                                resources.getIdentifier(
-                                        "game_bg_" + cells[i][j],
-                                        "color",
-                                        getPackageName()
-                                ),
-                                getTheme()
-                        ));
-            }
-        }
-    }
-
-    private boolean MoveLeft() {
-        boolean result = false;
-
-        for (int i = 0; i < 4; ++i) {
-            int j = 0;
-            if (cells[i][j] == 0) {
-                for (int k = j + 1; k < 4; ++k) {
-                    if (cells[i][k] != 0) {
-                        cells[i][k - 1] = cells[i][k];
-                        cells[i][k] = 0;
-                        result = true;
-                    }
-                }
-
-                cells[i][3] = 0;
+                        )
+                );
             }
         }
 
-        if (result) ShowField();
-        return result;
-    }
-
-    private boolean MoveRight() {
-        boolean result = false;
-
-        for (int i = 3; i > 0; --i) {
-            int j = 3;
-            if (cells[i][j] == 0) {
-                for (int k = j - 1; k > 0; --k) {
-                    if (cells[i][k] != 0) {
-                        cells[i][k + 1] = cells[i][k];
-                        cells[i][k] = 0;
-                        result = true;
-                    }
-                }
-
-                cells[i][0] = 0;
-            }
-        }
-
-        if (result) ShowField();
-        return result;
+        return tvCells;
     }
 }

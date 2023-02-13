@@ -25,6 +25,7 @@ public class CalcActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         CalcActivity.context = super.getApplicationContext();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calc);
 
