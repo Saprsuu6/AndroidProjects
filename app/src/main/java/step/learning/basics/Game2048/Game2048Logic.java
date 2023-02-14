@@ -243,6 +243,8 @@ public class Game2048Logic {
         return true;
     }
     // endregion
+
+    // TODO: top moving, bottom moving, dialog, layout change
 }
 
 
