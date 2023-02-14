@@ -23,7 +23,8 @@ public class Game2048Logic {
     private final Random random = new Random();
     private int score = 0;
     private int bestScore = 0;
-    private int goal = 0;
+    private int firstNum;
+    private int goal;
     private final TextView[] textInfo;
     private final String bestScoreFileName = "best_score.txt";
 
@@ -35,40 +36,10 @@ public class Game2048Logic {
             bestScore = 0;
         }
         textInfo[1].setText(Game2048Activity.context.getString(R.string.btnBestScore, bestScore));
+
+        firstNum = random.nextInt(10) == 0 ? 4 : 2;
+        goal = firstNum == 2 ? 4 : 8;
     }
-
-    // region work with file
-    private void SaveBestScore() {
-        try (FileOutputStream fos = Game2048Activity.context.openFileOutput(bestScoreFileName, Game2048Activity.context.MODE_PRIVATE)) {
-            DataOutputStream writer = new DataOutputStream(fos);
-            writer.writeInt(bestScore);
-
-            writer.flush();
-            writer.close();
-        } catch (FileNotFoundException e) {
-            Log.d("saveBestScore", e.getMessage());
-        } catch (IOException e) {
-            Log.d("saveBestScore", e.getMessage());
-        }
-    }
-
-    private boolean LoadBestScore() {
-        try (FileInputStream fis = Game2048Activity.context.openFileInput(bestScoreFileName)) {
-            DataInputStream reader = new DataInputStream(fis);
-            bestScore = reader.readInt();
-
-            reader.close();
-        } catch (FileNotFoundException e) {
-            Log.d("saveBestScore", e.getMessage());
-            return false;
-        } catch (IOException e) {
-            Log.d("saveBestScore", e.getMessage());
-            return false;
-        }
-
-        return true;
-    }
-    // endregion
 
     /**
      * Spawn random cell
@@ -93,7 +64,13 @@ public class Game2048Logic {
 
         int x = freeCells.get(rnd) / 10;
         int y = freeCells.get(rnd) % 10;
-        cells[x][y] = random.nextInt(10) == 0 ? 4 : 2;
+
+        if (firstNum != 0) {
+            cells[x][y] = firstNum;
+            firstNum = 0;
+        } else {
+            cells[x][y] = random.nextInt(10) == 0 ? 4 : 2;
+        }
 
         tvCells[x][y].startAnimation(animation);
 
@@ -137,6 +114,7 @@ public class Game2048Logic {
         }
     }
 
+    //region Moving
     public boolean MoveLeft() {
         boolean result = false;
         for (int i = 0; i < 4; ++i) {
@@ -161,9 +139,7 @@ public class Game2048Logic {
             for (int j = 0; j < 3; ++j) {
                 if (cells[i][j] != 0 && cells[i][j] == cells[i][j + 1]) {
                     cells[i][j] *= 2;
-                    if (cells[i][j] == goal) {
-                        goal *= 2;
-                    }
+                    SetGoal(cells[i][j]);
 
                     for (int k = j + 1; k < 3; ++k) {
                         cells[i][k] = cells[i][k + 1];
@@ -171,7 +147,8 @@ public class Game2048Logic {
 
                     cells[i][3] = 0;
                     result = true;
-                    score += cells[i][j];
+
+                    ChangeScore(cells[i][j]);
                 }
             }
         }
@@ -205,9 +182,7 @@ public class Game2048Logic {
             for (int j = 3; j > 0; --j) {
                 if (cells[i][j] != 0 && cells[i][j] == cells[i][j - 1]) {
                     cells[i][j] *= 2;
-                    if (cells[i][j] == goal) {
-                        goal *= 2;
-                    }
+                    SetGoal(cells[i][j]);
 
                     for (int k = j - 1; k > 0; --k) {
                         cells[i][k] = cells[i][k - 1];
@@ -215,7 +190,8 @@ public class Game2048Logic {
 
                     cells[i][0] = 0;
                     result = true;
-                    score += cells[i][j];
+
+                    ChangeScore(cells[i][j]);
                 }
             }
         }
@@ -223,6 +199,50 @@ public class Game2048Logic {
         if (result) ShowField();
         return result;
     }
+
+    private void ChangeScore(int result) {
+        score += result;
+    }
+
+    private void SetGoal(int result) {
+        if (result == goal) {
+            goal *= 2;
+        }
+    }
+    //endregion
+
+    // region Work with file
+    private void SaveBestScore() {
+        try (FileOutputStream fos = Game2048Activity.context.openFileOutput(bestScoreFileName, Game2048Activity.context.MODE_PRIVATE)) {
+            DataOutputStream writer = new DataOutputStream(fos);
+            writer.writeInt(bestScore);
+
+            writer.flush();
+            writer.close();
+        } catch (FileNotFoundException e) {
+            Log.d("saveBestScore", e.getMessage());
+        } catch (IOException e) {
+            Log.d("saveBestScore", e.getMessage());
+        }
+    }
+
+    private boolean LoadBestScore() {
+        try (FileInputStream fis = Game2048Activity.context.openFileInput(bestScoreFileName)) {
+            DataInputStream reader = new DataInputStream(fis);
+            bestScore = reader.readInt();
+
+            reader.close();
+        } catch (FileNotFoundException e) {
+            Log.d("saveBestScore", e.getMessage());
+            return false;
+        } catch (IOException e) {
+            Log.d("saveBestScore", e.getMessage());
+            return false;
+        }
+
+        return true;
+    }
+    // endregion
 }
 
 
