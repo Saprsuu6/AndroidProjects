@@ -2,6 +2,7 @@ package step.learning.basics.Game2048;
 
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.view.View;
 import android.view.animation.Animation;
 import android.widget.TextView;
 
@@ -9,13 +10,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class Game2048Logic {
-    private int[][] cells = new int[4][4];
-    private TextView[][] tvCells = new TextView[4][4];
-    private final Random random = new Random();
+import step.learning.basics.R;
 
-    public Game2048Logic(TextView[][] tvCells) {
+public class Game2048Logic {
+    private final int[][] cells = new int[4][4];
+    private final TextView[][] tvCells;
+    private final Random random = new Random();
+    private int score = 0;
+    private int bestScore = 0;
+    private final TextView scoreView;
+    private final TextView bestScoreView;
+
+    public Game2048Logic(TextView[][] tvCells, TextView scoreView, TextView bestScoreView) {
         this.tvCells = tvCells;
+        this.scoreView = scoreView;
+        this.bestScoreView = bestScoreView;
     }
 
     /**
@@ -74,23 +83,43 @@ public class Game2048Logic {
                         Game2048Activity.context.getTheme()));
             }
         }
+        scoreView.setText(Game2048Activity.context.getString(R.string.btnScore, score));
+        bestScoreView.setText(Game2048Activity.context.getString(R.string.btnBestScore, bestScore));
     }
 
     public boolean MoveLeft() {
         boolean result = false;
-
         for (int i = 0; i < 4; ++i) {
-            int j = 0;
-            if (cells[i][j] == 0) {
-                for (int k = j + 1; k < 4; ++k) {
-                    if (cells[i][k] != 0) {
-                        cells[i][k - 1] = cells[i][k];
-                        cells[i][k] = 0;
-                        result = true;
+            boolean needRepeat = true;
+            while (needRepeat) {
+                needRepeat = false;
+                for (int j = 0; j < 3; ++j) {
+                    if (cells[i][j] == 0) {
+                        for (int k = j + 1; k < 4; ++k) {
+                            if (cells[i][k] != 0) {
+                                cells[i][k - 1] = cells[i][k];
+                                cells[i][k] = 0;
+                                needRepeat = true;
+                                result = true;
+                            }
+                        }
+                        cells[i][3] = 0;
                     }
                 }
+            }
 
-                cells[i][3] = 0;
+            for (int j = 0; j < 3; ++j) {
+                if (cells[i][j] != 0 && cells[i][j] == cells[i][j + 1]) {
+                    cells[i][j] *= 2;
+
+                    for (int k = j + 1; k < 3; ++k) {
+                        cells[i][k] = cells[i][k + 1];
+                    }
+
+                    cells[i][3] = 0;
+                    result = true;
+                    score += cells[i][j];
+                }
             }
         }
 
@@ -100,19 +129,38 @@ public class Game2048Logic {
 
     public boolean MoveRight() {
         boolean result = false;
+        for (int i = 3; i >= 0; --i) {
+            boolean needRepeat = true;
+            while (needRepeat) {
+                needRepeat = false;
+                for (int j = 3; j > 0; --j) {
+                    if (cells[i][j] == 0) {
+                        for (int k = j - 1; k >= 0; --k) {
+                            if (cells[i][k] != 0) {
+                                cells[i][k + 1] = cells[i][k];
+                                cells[i][k] = 0;
+                                needRepeat = true;
+                                result = true;
+                            }
+                        }
 
-        for (int i = 3; i > 0; --i) {
-            int j = 3;
-            if (cells[i][j] == 0) {
-                for (int k = j - 1; k > 0; --k) {
-                    if (cells[i][k] != 0) {
-                        cells[i][k + 1] = cells[i][k];
-                        cells[i][k] = 0;
-                        result = true;
+                        cells[i][0] = 0;
                     }
                 }
+            }
 
-                cells[i][0] = 0;
+            for (int j = 3; j > 0; --j) {
+                if (cells[i][j] != 0 && cells[i][j] == cells[i][j - 1]) {
+                    cells[i][j] *= 2;
+
+                    for (int k = j - 1; k > 0; --k) {
+                        cells[i][k] = cells[i][k - 1];
+                    }
+
+                    cells[i][0] = 0;
+                    result = true;
+                    score += cells[i][j];
+                }
             }
         }
 

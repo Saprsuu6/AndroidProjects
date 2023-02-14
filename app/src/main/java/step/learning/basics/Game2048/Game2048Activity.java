@@ -35,7 +35,7 @@ public class Game2048Activity extends AppCompatActivity {
         spawnAnimation = AnimationUtils.loadAnimation(this, R.anim.spawn_cell);
         spawnAnimation.reset();
 
-        logic = new Game2048Logic(FindTextViews());
+        logic = new Game2048Logic(FindTextViews(), findViewById(R.id.score), findViewById(R.id.bestScore));
         findViewById(R.id.layout_2048).setOnTouchListener(new OnSwipeListener(Game2048Activity.this) {
             @Override
             public void OnSwipeRight() {

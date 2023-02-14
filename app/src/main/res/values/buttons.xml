@@ -24,6 +24,6 @@
     <string name="btnNull">0</string>
     <string name="btnComa">.</string>
     <string name="btnIs">=</string>
-    <string name="btnScore">SCORE\n0</string>
-    <string name="btnBestScore">BEST\n0</string>
+    <string name="btnScore">SCORE\n%d</string>
+    <string name="btnBestScore">BEST\n%d</string>
 </resources>
