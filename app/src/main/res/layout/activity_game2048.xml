@@ -89,7 +89,7 @@
                     android:text="NEW" />
 
                 <Button
-                    android:id="@+id/best"
+                    android:id="@+id/undo"
                     style="@style/Game2048TextStyles"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"

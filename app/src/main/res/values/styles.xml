@@ -44,7 +44,7 @@
     </style>
 
     <style name="CellBase" parent="TextAppearance.AppCompat">
-        <item name="android:background">@drawable/calc_btn_shape</item>
+        <item name="android:background">@drawable/game2048_btn_shape</item>
         <item name="android:textSize">30sp</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_weight">1</item>
@@ -62,22 +62,57 @@
     </style>
 
     <style name="Cell_2" parent="CellBase">
-        <item name="android:textColor">#81766A</item>
+        <item name="android:textColor">#776E65</item>
         <item name="android:backgroundTint">@color/game_bg_2</item>
     </style>
 
     <style name="Cell_4" parent="CellBase">
-        <item name="android:textColor">#81766A</item>
+        <item name="android:textColor">#776E65</item>
         <item name="android:backgroundTint">@color/game_bg_4</item>
     </style>
 
     <style name="Cell_8" parent="CellBase">
-        <item name="android:textColor">#FEF1DF</item>
+        <item name="android:textColor">#F8F5F1</item>
         <item name="android:backgroundTint">@color/game_bg_8</item>
     </style>
 
     <style name="Cell_16" parent="CellBase">
-        <item name="android:textColor">#F9F5EF</item>
+        <item name="android:textColor">#F8F5F1</item>
         <item name="android:backgroundTint">@color/game_bg_16</item>
+    </style>
+
+    <style name="Cell_32" parent="CellBase">
+        <item name="android:textColor">#F8F5F1</item>
+        <item name="android:backgroundTint">@color/game_bg_32</item>
+    </style>
+
+    <style name="Cell_64" parent="CellBase">
+        <item name="android:textColor">#F8F5F1</item>
+        <item name="android:backgroundTint">@color/game_bg_64</item>
+    </style>
+
+    <style name="Cell_128" parent="CellBase">
+        <item name="android:textColor">#F8F5F1</item>
+        <item name="android:backgroundTint">@color/game_bg_128</item>
+    </style>
+
+    <style name="Cell_256" parent="CellBase">
+        <item name="android:textColor">#F8F5F1</item>
+        <item name="android:backgroundTint">@color/game_bg_256</item>
+    </style>
+
+    <style name="Cell_512" parent="CellBase">
+        <item name="android:textColor">#F8F5F1</item>
+        <item name="android:backgroundTint">@color/game_bg_512</item>
+    </style>
+
+    <style name="Cell_1024" parent="CellBase">
+        <item name="android:textColor">#F8F5F1</item>
+        <item name="android:backgroundTint">@color/game_bg_1024</item>
+    </style>
+
+    <style name="Cell_2048" parent="CellBase">
+        <item name="android:textColor">#F8F5F1</item>
+        <item name="android:backgroundTint">@color/game_bg_2048</item>
     </style>
 </resources>

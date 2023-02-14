@@ -24,4 +24,11 @@
     <color name="game_bg_4">#EDE1C8</color>
     <color name="game_bg_8">#F3B27F</color>
     <color name="game_bg_16">#F69D6C</color>
+    <color name="game_bg_32">#F57C60</color>
+    <color name="game_bg_64">#F55E3B</color>
+    <color name="game_bg_128">#ECCE73</color>
+    <color name="game_bg_256">#ECCB62</color>
+    <color name="game_bg_512">#ECC750</color>
+    <color name="game_bg_1024">#ECC43F</color>
+    <color name="game_bg_2048">#ECC12D</color>
 </resources>

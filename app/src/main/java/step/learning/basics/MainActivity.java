@@ -2,6 +2,7 @@ package step.learning.basics;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -11,9 +12,12 @@ import step.learning.basics.Calculator.CalcActivity;
 import step.learning.basics.Game2048.Game2048Activity;
 
 public class MainActivity extends AppCompatActivity {
+    public static Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        MainActivity.context = this.getApplicationContext();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -36,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(Game2048Intent);
     }
 
-    private void exitButtonClick(View v) {
+    public void exitButtonClick(View v) {
         finish();
     }
 }

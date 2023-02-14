@@ -8,7 +8,6 @@ import android.widget.TextView;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,28 +17,56 @@ import java.util.Random;
 import step.learning.basics.R;
 
 public class Game2048Logic {
-    private final int[][] cells = new int[4][4];
+    private int[][] cells = new int[4][4];
+    private int[][] prevCells = new int[4][4];
     private final TextView[][] tvCells;
     private final Random random = new Random();
-    private int score = 0;
+    private int score;
+    private int prevScore;
     private int bestScore = 0;
-    private int firstNum;
+    private int firstNum; // первое отображаемое число
     private int goal;
-    private final TextView[] textInfo;
+    private final TextView[] textInfo; // обекты текстовой информации
     private final String bestScoreFileName = "best_score.txt";
+    private boolean isContinuePlaying = false;  // продолжение игры после набора 2048
 
     public Game2048Logic(TextView[][] tvCells, TextView[] textInfo) {
         this.tvCells = tvCells;
         this.textInfo = textInfo;
 
-        if (!LoadBestScore()) {
+        try {
+            LoadBestScore();
+        } catch (IOException e) {
+            Log.d("saveBestScore", e.getMessage());
             bestScore = 0;
         }
+
+        FirstSteps();
+    }
+
+    // region Start of the game
+    public void FirstSteps() {
+        score = 0;
         textInfo[1].setText(Game2048Activity.context.getString(R.string.btnBestScore, bestScore));
 
         firstNum = random.nextInt(10) == 0 ? 4 : 2;
         goal = firstNum == 2 ? 4 : 8;
     }
+
+    public void NewGame() {
+        for (int i = 0; i < 4; ++i) {
+            for (int j = 0; j < 4; ++j) {
+                prevCells[i][j] = 0;
+                cells[i][j] = 0;
+            }
+        }
+
+        FirstSteps();
+
+        SpawnCell(Game2048Activity.spawnAnimation);
+        SpawnCell(Game2048Activity.spawnAnimation);
+    }
+    // endregion
 
     /**
      * Spawn random cell
@@ -88,31 +115,73 @@ public class Game2048Logic {
                 String value = cells[i][j] > 0 ? String.valueOf(cells[i][j]) : "";
 
                 tvCells[i][j].setText(String.valueOf(value));
-                tvCells[i][j].setTextAppearance(
-                        resources.getIdentifier(
-                                "Cell_" + cells[i][j],
-                                "style",
-                                Game2048Activity.context.getPackageName()
-                        ));
+                tvCells[i][j].setTextAppearance(resources.getIdentifier("Cell_" + cells[i][j], "style", Game2048Activity.context.getPackageName()));
 
-                tvCells[i][j].setBackgroundTintList(resources.getColorStateList(resources.getIdentifier(
-                                "game_bg_" + cells[i][j],
-                                "color",
-                                Game2048Activity.context.getPackageName()
-                        ),
-                        Game2048Activity.context.getTheme()));
+                tvCells[i][j].setBackgroundTintList(resources.getColorStateList(resources.getIdentifier("game_bg_" + cells[i][j], "color", Game2048Activity.context.getPackageName()), Game2048Activity.context.getTheme()));
             }
         }
 
+        // отображение текстовой информации
         textInfo[0].setText(Game2048Activity.context.getString(R.string.btnScore, score));
         textInfo[2].setText(Game2048Activity.context.getString(R.string.btn_infoGoal, goal));
 
+        SaveScore();
+
+        // проверяем условие победы
+        if (!isContinuePlaying) {
+            if (isWin()) {
+                ShowWinDialog();
+            }
+        }
+    }
+
+    private void SaveScore() {
         if (score > bestScore) {
             bestScore = score;
-            SaveBestScore(); // catch error
+            try {
+                SaveBestScore();
+            } catch (IOException e) {
+                Log.d("saveBestScore", e.getMessage());
+                return;
+            }
             textInfo[1].setText(Game2048Activity.context.getString(R.string.btnBestScore, bestScore));
         }
     }
+
+    //region Undo
+    public void Undo(String swipe) {
+        switch (swipe) {
+            case "right":
+                UndoRight();
+                break;
+            case "left":
+                UndoLeft();
+                break;
+            case "top":
+                UndoTop();
+                break;
+            case "bottom":
+                UndoBottom();
+                break;
+        }
+    }
+
+    private void UndoRight() {
+
+    }
+
+    private void UndoLeft() {
+
+    }
+
+    private void UndoTop() {
+
+    }
+
+    private void UndoBottom() {
+
+    }
+    //endregion
 
     //region Moving
     public boolean MoveLeft() {
@@ -136,6 +205,7 @@ public class Game2048Logic {
                 }
             }
 
+            // Слияние
             for (int j = 0; j < 3; ++j) {
                 if (cells[i][j] != 0 && cells[i][j] == cells[i][j + 1]) {
                     cells[i][j] *= 2;
@@ -179,6 +249,7 @@ public class Game2048Logic {
                 }
             }
 
+            // Слияние
             for (int j = 3; j > 0; --j) {
                 if (cells[i][j] != 0 && cells[i][j] == cells[i][j - 1]) {
                     cells[i][j] *= 2;
@@ -200,6 +271,93 @@ public class Game2048Logic {
         return result;
     }
 
+    public boolean MoveTop() {
+        boolean result = false;
+        for (int i = 0; i < 4; ++i) {
+            boolean needRepeat = true;
+            while (needRepeat) {
+                needRepeat = false;
+                for (int j = 0; j < 3; ++j) {
+                    if (cells[j][i] == 0) {
+                        for (int k = j + 1; k < 4; ++k) {
+                            if (cells[k][i] != 0) {
+                                cells[k - 1][i] = cells[k][i];
+                                cells[k][i] = 0;
+                                needRepeat = true;
+                                result = true;
+                            }
+                        }
+                        cells[3][i] = 0;
+                    }
+                }
+            }
+
+            // Слияние
+            for (int j = 0; j < 3; ++j) {
+                if (cells[j][i] != 0 && cells[j][i] == cells[j + 1][i]) {
+                    cells[j][i] *= 2;
+                    SetGoal(cells[j][i]);
+
+                    for (int k = j + 1; k < 3; ++k) {
+                        cells[k][i] = cells[k + 1][i];
+                    }
+
+                    cells[3][i] = 0;
+                    result = true;
+
+                    ChangeScore(cells[j][i]);
+                }
+            }
+        }
+
+        if (result) ShowField();
+        return result;
+    }
+
+    public boolean MoveBottom() {
+        boolean result = false;
+        for (int i = 3; i >= 0; --i) {
+            boolean needRepeat = true;
+            while (needRepeat) {
+                needRepeat = false;
+                for (int j = 3; j > 0; --j) {
+                    if (cells[j][i] == 0) {
+                        for (int k = j - 1; k >= 0; --k) {
+                            if (cells[k][i] != 0) {
+                                cells[k + 1][i] = cells[k][i];
+                                cells[k][i] = 0;
+                                needRepeat = true;
+                                result = true;
+                            }
+                        }
+
+                        cells[0][i] = 0;
+                    }
+                }
+            }
+
+            // Слияние
+            for (int j = 3; j > 0; --j) {
+                if (cells[j][i] != 0 && cells[j][i] == cells[j - 1][i]) {
+                    cells[j][i] *= 2;
+                    SetGoal(cells[j][i]);
+
+                    for (int k = j - 1; k > 0; --k) {
+                        cells[k][i] = cells[k - 1][i];
+                    }
+
+                    cells[0][i] = 0;
+                    result = true;
+
+                    ChangeScore(cells[j][i]);
+                }
+            }
+        }
+
+        if (result) ShowField();
+        return result;
+    }
+
     private void ChangeScore(int result) {
         score += result;
     }
@@ -211,40 +369,68 @@ public class Game2048Logic {
     }
     //endregion
 
-    // region Work with file
-    private void SaveBestScore() {
+    //region Work with file
+    private void SaveBestScore() throws IOException {
         try (FileOutputStream fos = Game2048Activity.context.openFileOutput(bestScoreFileName, Game2048Activity.context.MODE_PRIVATE)) {
             DataOutputStream writer = new DataOutputStream(fos);
             writer.writeInt(bestScore);
 
             writer.flush();
             writer.close();
-        } catch (FileNotFoundException e) {
-            Log.d("saveBestScore", e.getMessage());
         } catch (IOException e) {
-            Log.d("saveBestScore", e.getMessage());
+            throw e;
         }
     }
 
-    private boolean LoadBestScore() {
+    private void LoadBestScore() throws IOException {
         try (FileInputStream fis = Game2048Activity.context.openFileInput(bestScoreFileName)) {
             DataInputStream reader = new DataInputStream(fis);
             bestScore = reader.readInt();
 
             reader.close();
-        } catch (FileNotFoundException e) {
-            Log.d("saveBestScore", e.getMessage());
-            return false;
         } catch (IOException e) {
-            Log.d("saveBestScore", e.getMessage());
-            return false;
+            throw e;
         }
-
-        return true;
     }
-    // endregion
+    //endregion
 
-    // TODO: top moving, bottom moving, dialog, layout change
+    //region Game finish
+    private boolean isWin() {
+        for (int i = 0; i < 4; ++i) {
+            for (int j = 0; j < 4; ++j) {
+                if (cells[i][j] == 8) { // change 2048
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private void ShowWinDialog() {
+        System.out.println("TODO dialog");
+
+//        new AlertDialog.Builder(Game2048Activity.context, R.style.Theme_Basics)
+//                .setTitle("Победа!")
+//                .setMessage("Вы собрали 2048")
+//                .setIcon(android.R.drawable.ic_dialog_info)
+//                .setPositiveButton("Продолжить", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int whichButton) {
+//                        isContinuePlaying = true;
+//                    }
+//                })
+//                .setNegativeButton("Выйти", (dialog, whichButton) -> {
+//                    Toast.makeText(Game2048Activity.context, "Скоро доделаем", Toast.LENGTH_SHORT).show();
+//                })
+//                .setNeutralButton("Заново", (dialog, whichButton) -> {
+//                    Toast.makeText(Game2048Activity.context, "Скоро доделаем", Toast.LENGTH_SHORT).show();
+//                })
+//                .setCancelable(false)  // модальный вариант - не отменяется, нужен выбор
+//                .show();
+    }
+    //endregion
 }
+
+// TODO: dialog, undo
 
 
