@@ -1,11 +1,16 @@
 package step.learning.basics.Game2048;
 
-import android.content.res.ColorStateList;
 import android.content.res.Resources;
-import android.view.View;
+import android.util.Log;
 import android.view.animation.Animation;
 import android.widget.TextView;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -18,14 +23,52 @@ public class Game2048Logic {
     private final Random random = new Random();
     private int score = 0;
     private int bestScore = 0;
-    private final TextView scoreView;
-    private final TextView bestScoreView;
+    private int goal = 0;
+    private final TextView[] textInfo;
+    private final String bestScoreFileName = "best_score.txt";
 
-    public Game2048Logic(TextView[][] tvCells, TextView scoreView, TextView bestScoreView) {
+    public Game2048Logic(TextView[][] tvCells, TextView[] textInfo) {
         this.tvCells = tvCells;
-        this.scoreView = scoreView;
-        this.bestScoreView = bestScoreView;
+        this.textInfo = textInfo;
+
+        if (!LoadBestScore()) {
+            bestScore = 0;
+        }
+        textInfo[1].setText(Game2048Activity.context.getString(R.string.btnBestScore, bestScore));
     }
+
+    // region work with file
+    private void SaveBestScore() {
+        try (FileOutputStream fos = Game2048Activity.context.openFileOutput(bestScoreFileName, Game2048Activity.context.MODE_PRIVATE)) {
+            DataOutputStream writer = new DataOutputStream(fos);
+            writer.writeInt(bestScore);
+
+            writer.flush();
+            writer.close();
+        } catch (FileNotFoundException e) {
+            Log.d("saveBestScore", e.getMessage());
+        } catch (IOException e) {
+            Log.d("saveBestScore", e.getMessage());
+        }
+    }
+
+    private boolean LoadBestScore() {
+        try (FileInputStream fis = Game2048Activity.context.openFileInput(bestScoreFileName)) {
+            DataInputStream reader = new DataInputStream(fis);
+            bestScore = reader.readInt();
+
+            reader.close();
+        } catch (FileNotFoundException e) {
+            Log.d("saveBestScore", e.getMessage());
+            return false;
+        } catch (IOException e) {
+            Log.d("saveBestScore", e.getMessage());
+            return false;
+        }
+
+        return true;
+    }
+    // endregion
 
     /**
      * Spawn random cell
@@ -83,8 +126,15 @@ public class Game2048Logic {
                         Game2048Activity.context.getTheme()));
             }
         }
-        scoreView.setText(Game2048Activity.context.getString(R.string.btnScore, score));
-        bestScoreView.setText(Game2048Activity.context.getString(R.string.btnBestScore, bestScore));
+
+        textInfo[0].setText(Game2048Activity.context.getString(R.string.btnScore, score));
+        textInfo[2].setText(Game2048Activity.context.getString(R.string.btn_infoGoal, goal));
+
+        if (score > bestScore) {
+            bestScore = score;
+            SaveBestScore(); // catch error
+            textInfo[1].setText(Game2048Activity.context.getString(R.string.btnBestScore, bestScore));
+        }
     }
 
     public boolean MoveLeft() {
@@ -111,6 +161,9 @@ public class Game2048Logic {
             for (int j = 0; j < 3; ++j) {
                 if (cells[i][j] != 0 && cells[i][j] == cells[i][j + 1]) {
                     cells[i][j] *= 2;
+                    if (cells[i][j] == goal) {
+                        goal *= 2;
+                    }
 
                     for (int k = j + 1; k < 3; ++k) {
                         cells[i][k] = cells[i][k + 1];
@@ -152,6 +205,9 @@ public class Game2048Logic {
             for (int j = 3; j > 0; --j) {
                 if (cells[i][j] != 0 && cells[i][j] == cells[i][j - 1]) {
                     cells[i][j] *= 2;
+                    if (cells[i][j] == goal) {
+                        goal *= 2;
+                    }
 
                     for (int k = j - 1; k > 0; --k) {
                         cells[i][k] = cells[i][k - 1];

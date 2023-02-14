@@ -1,7 +1,6 @@
 package step.learning.basics.Game2048;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -10,13 +9,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import org.w3c.dom.Text;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
-import step.learning.basics.Calculator.CalcActivity;
 import step.learning.basics.R;
 
 public class Game2048Activity extends AppCompatActivity {
@@ -35,7 +27,7 @@ public class Game2048Activity extends AppCompatActivity {
         spawnAnimation = AnimationUtils.loadAnimation(this, R.anim.spawn_cell);
         spawnAnimation.reset();
 
-        logic = new Game2048Logic(FindTextViews(), findViewById(R.id.score), findViewById(R.id.bestScore));
+        logic = new Game2048Logic(FindTextViews(), new TextView[]{findViewById(R.id.score), findViewById(R.id.bestScore), findViewById(R.id.btn_infoGoal)});
         findViewById(R.id.layout_2048).setOnTouchListener(new OnSwipeListener(Game2048Activity.this) {
             @Override
             public void OnSwipeRight() {
