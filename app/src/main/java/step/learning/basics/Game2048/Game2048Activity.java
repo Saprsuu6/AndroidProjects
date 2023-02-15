@@ -75,6 +75,13 @@ public class Game2048Activity extends AppCompatActivity {
         });
 
         newGame = findViewById(R.id.newGame);
+        undo = findViewById(R.id.undo);
+
+        logic.SpawnCell(Game2048Activity.spawnAnimation);
+        logic.SpawnCell(Game2048Activity.spawnAnimation);
+    }
+
+    private void SetListeners() {
         newGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -82,16 +89,12 @@ public class Game2048Activity extends AppCompatActivity {
             }
         });
 
-        undo = findViewById(R.id.undo);
         undo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 logic.Undo(swipes.get(swipes.size() - 1));
             }
         });
-
-        logic.SpawnCell(Game2048Activity.spawnAnimation);
-        logic.SpawnCell(Game2048Activity.spawnAnimation);
     }
 
     /**
