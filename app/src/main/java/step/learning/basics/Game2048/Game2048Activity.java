@@ -19,7 +19,6 @@ import step.learning.basics.R;
 public class Game2048Activity extends AppCompatActivity {
     public static Context context;
     public static Animation spawnAnimation;
-    public ArrayList<String> swipes = new ArrayList<>();
     private Game2048Logic logic;
     private Button newGame;
     private Button undo;
@@ -41,7 +40,6 @@ public class Game2048Activity extends AppCompatActivity {
             public void OnSwipeRight() {
                 if (logic.MoveRight()) {
                     logic.SpawnCell(spawnAnimation);
-                    swipes.add("right");
                 } else
                     Toast.makeText(Game2048Activity.this, "No Right Move", Toast.LENGTH_SHORT).show();
             }
@@ -50,7 +48,6 @@ public class Game2048Activity extends AppCompatActivity {
             public void OnSwipeLeft() {
                 if (logic.MoveLeft()) {
                     logic.SpawnCell(spawnAnimation);
-                    swipes.add("left");
                 } else
                     Toast.makeText(Game2048Activity.this, "No Left Move", Toast.LENGTH_SHORT).show();
             }
@@ -59,7 +56,6 @@ public class Game2048Activity extends AppCompatActivity {
             public void OnSwipeTop() {
                 if (logic.MoveTop()) {
                     logic.SpawnCell(spawnAnimation);
-                    swipes.add("top");
                 } else
                     Toast.makeText(Game2048Activity.this, "No Top Move", Toast.LENGTH_SHORT).show();
             }
@@ -68,7 +64,7 @@ public class Game2048Activity extends AppCompatActivity {
             public void OnSwipeBottom() {
                 if (logic.MoveBottom()) {
                     logic.SpawnCell(spawnAnimation);
-                    swipes.add("bottom");
+                    ;
                 } else
                     Toast.makeText(Game2048Activity.this, "No Bottom Move", Toast.LENGTH_SHORT).show();
             }
@@ -76,6 +72,8 @@ public class Game2048Activity extends AppCompatActivity {
 
         newGame = findViewById(R.id.newGame);
         undo = findViewById(R.id.undo);
+
+        SetListeners();
 
         logic.SpawnCell(Game2048Activity.spawnAnimation);
         logic.SpawnCell(Game2048Activity.spawnAnimation);
@@ -92,7 +90,7 @@ public class Game2048Activity extends AppCompatActivity {
         undo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                logic.Undo(swipes.get(swipes.size() - 1));
+                logic.Undo();
             }
         });
     }
@@ -111,5 +109,9 @@ public class Game2048Activity extends AppCompatActivity {
         }
 
         return tvCells;
+    }
+
+    public static void ShowToast(String message) {
+        Toast.makeText(Game2048Activity.context, message, Toast.LENGTH_SHORT).show();
     }
 }

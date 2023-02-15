@@ -2,6 +2,7 @@ package step.learning.basics.Game2048;
 
 import android.content.res.Resources;
 import android.util.Log;
+import android.util.Pair;
 import android.view.animation.Animation;
 import android.widget.TextView;
 
@@ -18,14 +19,13 @@ import step.learning.basics.R;
 
 public class Game2048Logic {
     private int[][] cells = new int[4][4];
-    private int[][] prevCells = new int[4][4];
     private final TextView[][] tvCells;
     private final Random random = new Random();
     private int score;
-    private int prevScore;
     private int bestScore = 0;
     private int firstNum; // первое отображаемое число
     private int goal;
+    private Game2048History history = new Game2048History();
     private final TextView[] textInfo; // обекты текстовой информации
     private final String bestScoreFileName = "best_score.txt";
     private boolean isContinuePlaying = false;  // продолжение игры после набора 2048
@@ -56,7 +56,6 @@ public class Game2048Logic {
     public void NewGame() {
         for (int i = 0; i < 4; ++i) {
             for (int j = 0; j < 4; ++j) {
-                prevCells[i][j] = 0;
                 cells[i][j] = 0;
             }
         }
@@ -128,11 +127,11 @@ public class Game2048Logic {
         SaveScore();
 
         // проверяем условие победы
-        if (!isContinuePlaying) {
-            if (isWin()) {
-                ShowWinDialog();
-            }
-        }
+//        if (!isContinuePlaying) {
+//            if (isWin()) {
+//                ShowWinDialog();
+//            }
+//        }
     }
 
     private void SaveScore() {
@@ -149,42 +148,23 @@ public class Game2048Logic {
     }
 
     //region Undo
-    public void Undo(String swipe) {
-        switch (swipe) {
-            case "right":
-                UndoRight();
-                break;
-            case "left":
-                UndoLeft();
-                break;
-            case "top":
-                UndoTop();
-                break;
-            case "bottom":
-                UndoBottom();
-                break;
+    public void Undo() {
+        try {
+            Pair<Integer, int[][]> pair = history.getLastHistory();
+            score = pair.first;
+            cells = pair.second;
+
+            ShowField();
+        } catch (Exception e) {
+            Game2048Activity.ShowToast(e.getMessage());
         }
-    }
-
-    private void UndoRight() {
-
-    }
-
-    private void UndoLeft() {
-
-    }
-
-    private void UndoTop() {
-
-    }
-
-    private void UndoBottom() {
-
     }
     //endregion
 
     //region Moving
     public boolean MoveLeft() {
+        history.SaveHistory(cells, score);
+
         boolean result = false;
         for (int i = 0; i < 4; ++i) {
             boolean needRepeat = true;
@@ -223,11 +203,12 @@ public class Game2048Logic {
             }
         }
 
-        if (result) ShowField();
         return result;
     }
 
     public boolean MoveRight() {
+        history.SaveHistory(cells, score);
+
         boolean result = false;
         for (int i = 3; i >= 0; --i) {
             boolean needRepeat = true;
@@ -267,11 +248,12 @@ public class Game2048Logic {
             }
         }
 
-        if (result) ShowField();
         return result;
     }
 
     public boolean MoveTop() {
+        history.SaveHistory(cells, score);
+
         boolean result = false;
         for (int i = 0; i < 4; ++i) {
             boolean needRepeat = true;
@@ -310,11 +292,12 @@ public class Game2048Logic {
             }
         }
 
-        if (result) ShowField();
         return result;
     }
 
     public boolean MoveBottom() {
+        history.SaveHistory(cells, score);
+
         boolean result = false;
         for (int i = 3; i >= 0; --i) {
             boolean needRepeat = true;
@@ -354,7 +337,6 @@ public class Game2048Logic {
             }
         }
 
-        if (result) ShowField();
         return result;
     }
 
