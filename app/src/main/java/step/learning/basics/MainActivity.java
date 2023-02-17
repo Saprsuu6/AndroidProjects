@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 
 import step.learning.basics.Calculator.CalcActivity;
+import step.learning.basics.CurrencyRates.RatesActivity;
 import step.learning.basics.Game2048.Game2048Activity;
 
 public class MainActivity extends AppCompatActivity {
@@ -28,6 +29,13 @@ public class MainActivity extends AppCompatActivity {
                 .setOnClickListener(this::calcButtonClick);
         findViewById(R.id.Button2048)
                 .setOnClickListener(this::Button2048Click);
+        findViewById(R.id.ButtonRates)
+                .setOnClickListener(this::RatesButtonClick);
+    }
+
+    private void RatesButtonClick(View v) {
+        Intent ratesIntent = new Intent(this, RatesActivity.class);
+        startActivity(ratesIntent);
     }
 
     private void calcButtonClick(View v) {
@@ -36,20 +44,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void Button2048Click(View v) {
-        Intent Game2048Intent = new Intent(this, Game2048Activity.class);
-        startActivity(Game2048Intent);
+        Intent game2048Intent = new Intent(this, Game2048Activity.class);
+        startActivity(game2048Intent);
     }
 
     public void exitButtonClick(View v) {
         finish();
     }
 }
-/*
-Д.З. Установить и настроить ПО для разработки:
-- Android Studio (+ SDK)
-- Emulator
-Запустить на эмуляторе приложение (рассмотренное на занятии)
-Приложить скриншоты его работы
-
-Теория - единицы измерения в Android
- */

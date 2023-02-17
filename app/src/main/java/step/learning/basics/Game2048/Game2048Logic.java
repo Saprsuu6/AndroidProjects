@@ -1,10 +1,13 @@
 package step.learning.basics.Game2048;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.util.Log;
 import android.util.Pair;
 import android.view.animation.Animation;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -18,6 +21,7 @@ import java.util.Random;
 import step.learning.basics.R;
 
 public class Game2048Logic {
+    private Game2048Activity activity;
     private int[][] cells = new int[4][4];
     private final TextView[][] tvCells;
     private final Random random = new Random();
@@ -30,9 +34,10 @@ public class Game2048Logic {
     private final String bestScoreFileName = "best_score.txt";
     private boolean isContinuePlaying = false;  // продолжение игры после набора 2048
 
-    public Game2048Logic(TextView[][] tvCells, TextView[] textInfo) {
+    public Game2048Logic(TextView[][] tvCells, TextView[] textInfo, Game2048Activity activity) {
         this.tvCells = tvCells;
         this.textInfo = textInfo;
+        this.activity = activity;
 
         try {
             LoadBestScore();
@@ -127,11 +132,11 @@ public class Game2048Logic {
         SaveScore();
 
         // проверяем условие победы
-//        if (!isContinuePlaying) {
-//            if (isWin()) {
-//                ShowWinDialog();
-//            }
-//        }
+        if (!isContinuePlaying) {
+            if (isWin()) {
+                ShowWinDialog();
+            }
+        }
     }
 
     private void SaveScore() {
@@ -389,30 +394,30 @@ public class Game2048Logic {
     }
 
     private void ShowWinDialog() {
-        System.out.println("TODO dialog");
+        //System.out.println("TODO dialog");
 
-//        new AlertDialog.Builder(Game2048Activity.context, R.style.Theme_Basics)
-//                .setTitle("Победа!")
-//                .setMessage("Вы собрали 2048")
-//                .setIcon(android.R.drawable.ic_dialog_info)
-//                .setPositiveButton("Продолжить", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int whichButton) {
-//                        isContinuePlaying = true;
-//                    }
-//                })
-//                .setNegativeButton("Выйти", (dialog, whichButton) -> {
-//                    Toast.makeText(Game2048Activity.context, "Скоро доделаем", Toast.LENGTH_SHORT).show();
-//                })
-//                .setNeutralButton("Заново", (dialog, whichButton) -> {
-//                    Toast.makeText(Game2048Activity.context, "Скоро доделаем", Toast.LENGTH_SHORT).show();
-//                })
-//                .setCancelable(false)  // модальный вариант - не отменяется, нужен выбор
-//                .show();
+        new AlertDialog.Builder(activity, R.style.Theme_Basics)
+                .setTitle("Победа!")
+                .setMessage("Вы собрали 2048")
+                .setIcon(android.R.drawable.ic_dialog_info)
+                .setPositiveButton("Продолжить", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        isContinuePlaying = true;
+                    }
+                })
+                .setNegativeButton("Выйти", (dialog, whichButton) -> {
+                    Toast.makeText(activity, "Скоро доделаем", Toast.LENGTH_SHORT).show();
+                })
+                .setNeutralButton("Заново", (dialog, whichButton) -> {
+                    Toast.makeText(activity, "Скоро доделаем", Toast.LENGTH_SHORT).show();
+                })
+                .setCancelable(false)  // модальный вариант - не отменяется, нужен выбор
+                .show();
     }
     //endregion
 }
 
-// TODO: dialog, undo
+// TODO: dialog, reorganisation view
 
 
