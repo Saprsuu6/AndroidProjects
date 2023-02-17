@@ -2,6 +2,7 @@ package step.learning.basics;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import step.learning.basics.Calculator.CalcActivity;
 import step.learning.basics.Game2048.Game2048Activity;
 
 public class MainActivity extends AppCompatActivity {
+    @SuppressLint("StaticFieldLeak")
     public static Context context;
 
     @Override
@@ -44,12 +46,3 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 }
-/*
-Д.З. Установить и настроить ПО для разработки:
-- Android Studio (+ SDK)
-- Emulator
-Запустить на эмуляторе приложение (рассмотренное на занятии)
-Приложить скриншоты его работы
-
-Теория - единицы измерения в Android
- */

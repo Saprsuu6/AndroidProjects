@@ -5,7 +5,7 @@ import android.util.Pair;
 import java.util.ArrayList;
 
 public class Game2048History {
-    private ArrayList<int[][]> fieldHistory = new ArrayList<>();
+    private final ArrayList<int[][]> fieldHistory = new ArrayList<>();
     private int score;
 
     public Pair<Integer, int[][]> getLastHistory() throws Exception {
@@ -20,7 +20,7 @@ public class Game2048History {
         int[][] lastHistory = fieldHistory.get(fieldHistory.size() - 1).clone();
         fieldHistory.remove(fieldHistory.size() - 1);
 
-        return new Pair<Integer, int[][]>(score, lastHistory);
+        return new Pair<>(score, lastHistory);
     }
 
     public void SaveHistory(int[][] cells, int score) {
@@ -47,9 +47,7 @@ public class Game2048History {
         // region Cloning
         int[][] clone = new int[4][4];
         for (int i = 0; i < 4; ++i) {
-            for (int j = 0; j < 4; ++j) {
-                clone[i][j] = cells[i][j];
-            }
+            System.arraycopy(cells[i], 0, clone[i], 0, 4);
         }
         //endregion
 

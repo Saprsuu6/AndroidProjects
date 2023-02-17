@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--    Calculator-->
     <string name="btnPercent">%</string>
     <string name="btnClearE">CE</string>
     <string name="btnClearAll">C</string>
@@ -24,6 +25,8 @@
     <string name="btnNull">0</string>
     <string name="btnComa">.</string>
     <string name="btnIs">=</string>
+
+    <!--    2048-->
     <string name="btnScore">SCORE\n%d</string>
     <string name="btnBestScore">BEST\n%d</string>
 </resources>

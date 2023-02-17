@@ -1,5 +1,6 @@
 package step.learning.basics.Game2048;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -14,6 +15,7 @@ public class OnSwipeListener implements View.OnTouchListener {
         this.gestureDetector = new GestureDetector(context, new GestureListener());
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
         return gestureDetector.onTouchEvent(motionEvent);
@@ -25,7 +27,6 @@ public class OnSwipeListener implements View.OnTouchListener {
 
         @Override
         public boolean onFling(@NonNull MotionEvent e1, @NonNull MotionEvent e2, float velocityX, float velocityY) {
-            boolean result = false;
             float dx = e2.getX() - e1.getX();
             float dy = e2.getY() - e1.getY();
             if (Math.abs(dx) > Math.abs(dy)) {
