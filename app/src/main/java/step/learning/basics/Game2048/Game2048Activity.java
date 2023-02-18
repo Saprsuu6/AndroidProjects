@@ -152,7 +152,7 @@ public class Game2048Activity extends AppCompatActivity {
     public void ShowWinDialog() {
         Resources resources = this.getResources();
 
-        new AlertDialog.Builder(this, R.style.Theme_Basics)
+        final AlertDialog alertDialog = new AlertDialog.Builder(this)
                 .setTitle(resources.getString(R.string.dialog_Header))
                 .setMessage(resources.getString(R.string.dialog_Message))
                 .setIcon(android.R.drawable.ic_dialog_info)
@@ -163,6 +163,8 @@ public class Game2048Activity extends AppCompatActivity {
                 .setNeutralButton(resources.getString(R.string.dialog_again), (dialog, whichButton)
                         -> logic.NewGame())
                 .setCancelable(false)
-                .show();
+                .create();
+
+        alertDialog.show();
     }
 }
