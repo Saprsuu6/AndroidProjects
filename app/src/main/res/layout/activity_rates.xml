@@ -19,7 +19,7 @@
             android:gravity="center"
             android:text="Currency rates"
             android:textColor="@color/black"
-            android:textSize="30sp" />
+            android:textSize="25sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -28,11 +28,23 @@
         android:layout_weight="10"
         android:orientation="vertical">
 
+        <TextView
+            style="@style/CurrencyRateCell"
+            android:backgroundTint="#F3B98D"
+            android:id="@+id/exchangeRate"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Exchange Rate will be here" />
+
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="0dp"
+            android:layout_weight="10">
 
             <TextView
+                style="@style/CurrencyRateCell"
                 android:id="@+id/json"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

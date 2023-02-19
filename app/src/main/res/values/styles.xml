@@ -115,4 +115,13 @@
         <item name="android:textColor">#F8F5F1</item>
         <item name="android:backgroundTint">@color/game_bg_2048</item>
     </style>
+
+    <!--    Currency Rate-->
+    <style name="CurrencyRateCell" parent="TextAppearance.AppCompat">
+        <item name="android:background">@drawable/currency_rate_cell</item>
+        <item name="android:layout_margin">10dp</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:elevation">20dp</item>
+        <item name="android:textSize">20sp</item>
+    </style>
 </resources>

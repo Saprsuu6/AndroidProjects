@@ -18,6 +18,7 @@ import step.learning.basics.R;
 
 public class RatesActivity extends AppCompatActivity {
     private TextView tvJson;
+    private TextView exchangeRate;
     private Services services;
     private List<RateDAO> rates;
 
@@ -28,6 +29,7 @@ public class RatesActivity extends AppCompatActivity {
 
         services = new Services(this);
 
+        exchangeRate = findViewById(R.id.exchangeRate);
         tvJson = findViewById(R.id.json);
         new Thread(() -> {
             String content = services.LoadUrl();
@@ -54,9 +56,11 @@ public class RatesActivity extends AppCompatActivity {
     private void ShowRates() {
         StringBuilder sb = new StringBuilder();
 
+        runOnUiThread(() -> exchangeRate.setText(rates.get(0).getExchangeDate()));
+
         for (RateDAO rate : rates) {
-            sb.append(String.format(Locale.getDefault(), "%s \"%s\"\nRate: %f\nExchange Date: %s\n\n",
-                    rate.getTxt(), rate.getCc(), rate.getRate(), rate.getExchangeDate()));
+            sb.append(String.format(Locale.getDefault(), "%s \"%s\"\nRate: %f\n\n",
+                    rate.getTxt(), rate.getCc(), rate.getRate()));
         }
 
         runOnUiThread(() -> tvJson.setText(sb.toString()));

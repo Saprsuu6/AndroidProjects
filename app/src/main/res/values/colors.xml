@@ -31,4 +31,7 @@
     <color name="game_bg_512">#ECC750</color>
     <color name="game_bg_1024">#ECC43F</color>
     <color name="game_bg_2048">#ECC12D</color>
+
+<!--    Currency Rate-->
+    <color name="currency_rate_cell">#C3BD63FE</color>
 </resources>
