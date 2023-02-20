@@ -3,6 +3,7 @@
     <string name="tv_hello_text">Android Basics</string>
     <string name="btn_calc_text">Calculator</string>
     <string name="btn_2048">2048</string>
+    <string name="btn_chat">Chat</string>
     <string name="btn_rates">Currency rates</string>
     <string name="btn_exit_text">Exit App</string>
     <string name="btn_infoMainText">Join the number and get to the\t</string>

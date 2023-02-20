@@ -15,14 +15,20 @@
         android:theme="@style/Theme.Basics"
         tools:targetApi="31">
         <activity
+            android:name=".Chat.ChatActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="locked"/>
+        <activity
             android:name=".CurrencyRates.RatesActivity"
             android:exported="false"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="locked"/>
         <activity
             android:name=".Game2048.Game2048Activity"
             android:exported="false"
             android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="locked" />
         <activity
             android:name=".Calculator.CalcActivity"
             android:exported="false"

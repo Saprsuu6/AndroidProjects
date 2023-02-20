@@ -45,6 +45,13 @@
             android:text="@string/btn_2048" />
 
         <Button
+            android:id="@+id/Chat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="25dp"
+            android:text="@string/btn_chat" />
+
+        <Button
             android:id="@+id/ButtonRates"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

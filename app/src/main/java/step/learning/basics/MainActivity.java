@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 
 import step.learning.basics.Calculator.CalcActivity;
+import step.learning.basics.Chat.ChatActivity;
 import step.learning.basics.CurrencyRates.RatesActivity;
 import step.learning.basics.Game2048.Game2048Activity;
 
@@ -25,12 +26,15 @@ public class MainActivity extends AppCompatActivity {
         Button addButton = findViewById(R.id.exitButton);
         addButton.setOnClickListener(this::exitButtonClick);
 
-        findViewById(R.id.calcButton)
-                .setOnClickListener(this::calcButtonClick);
-        findViewById(R.id.Button2048)
-                .setOnClickListener(this::Button2048Click);
-        findViewById(R.id.ButtonRates)
-                .setOnClickListener(this::RatesButtonClick);
+        findViewById(R.id.calcButton).setOnClickListener(this::calcButtonClick);
+        findViewById(R.id.Button2048).setOnClickListener(this::Button2048Click);
+        findViewById(R.id.ButtonRates).setOnClickListener(this::RatesButtonClick);
+        findViewById(R.id.Chat).setOnClickListener(this::ChatButtonClick);
+    }
+
+    private void ChatButtonClick(View view) {
+        Intent chatIntent = new Intent(this, ChatActivity.class);
+        startActivity(chatIntent);
     }
 
     private void RatesButtonClick(View v) {
