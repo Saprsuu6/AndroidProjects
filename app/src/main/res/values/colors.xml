@@ -34,4 +34,8 @@
 
 <!--    Currency Rate-->
     <color name="currency_rate_cell">#C3BD63FE</color>
+
+<!--     Chat-->
+    <color name="chat_right">#488358</color>
+    <color name="chat_left">#579C69</color>
 </resources>
