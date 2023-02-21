@@ -8,7 +8,6 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
-import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -63,9 +62,9 @@ public class RatesActivity extends AppCompatActivity {
         Resources resources = getResources();
 
         android.graphics.drawable.Drawable ratesBgLeft = AppCompatResources.getDrawable(
-                getApplicationContext(), R.drawable.currency_rate_cell_left);
+                getApplicationContext(), R.drawable.message_cell_left);
         android.graphics.drawable.Drawable ratesBgRight = AppCompatResources.getDrawable(
-                getApplicationContext(), R.drawable.currency_rate_cell_right);
+                getApplicationContext(), R.drawable.message_cell_right);
 
         LinearLayout container = findViewById(R.id.rates);
 

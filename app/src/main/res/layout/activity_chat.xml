@@ -66,12 +66,13 @@
             android:layout_weight="15"
             android:hint="Type message" />
 
-        <ImageView
+        <ImageButton
             android:id="@+id/send"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:padding="5dp"
-            android:src="@drawable/send" />
+            android:layout_weight="2"
+            android:clickable="false"
+            android:layout_margin="10dp"
+            android:background="@drawable/cannot_send" />
     </LinearLayout>
 </LinearLayout>

@@ -13,7 +13,7 @@ import step.learning.basics.CurrencyRates.RatesActivity;
 
 public class Services {
     private ChatActivity chatActivity;
-    private final String CHAT_URL = "https://diorama-chat.ew.r.appspot.com/story";
+    public static final String CHAT_URL = "https://diorama-chat.ew.r.appspot.com/story";
 
     public Services(ChatActivity chatActivity) {
         this.chatActivity = chatActivity;
@@ -23,7 +23,7 @@ public class Services {
         StringBuilder sb = new StringBuilder();
         String content = new String();
 
-        try (InputStream inputStream = new URL(CHAT_URL).openStream()) {
+        try (InputStream inputStream = new URL(Services.CHAT_URL).openStream()) {
             int sym;
             while ((sym = inputStream.read()) != -1) {
                 sb.append((char) sym);

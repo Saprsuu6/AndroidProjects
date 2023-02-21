@@ -8,25 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChatDAO {
-    public ChatDAO(JSONObject obj) throws JSONException {
-        this.status = obj.getString("status");
-        this.data = new ArrayList<>();
 
-        try {
-            ParseData(obj.getJSONArray("data"));
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private String status;
-    private List<UserDAO> data;
-
-    public List<UserDAO> getData() {
-        return data;
-    }
-
-    public void setStatus(String status) throws JSONException {
+    public void setStatus(String status) {
         this.status = status;
     }
 
@@ -37,6 +20,24 @@ public class ChatDAO {
     public String getStatus() {
         return status;
     }
+
+    public List<UserDAO> getData() {
+        return data;
+    }
+
+    public ChatDAO(JSONObject obj) throws JSONException {
+        setStatus(obj.getString("status"));
+        setData(new ArrayList<>());
+
+        try {
+            ParseData(obj.getJSONArray("data"));
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private String status;
+    private List<UserDAO> data;
 
     private void ParseData(JSONArray data) throws JSONException {
         for (int i = 0; i < data.length(); i++) {
