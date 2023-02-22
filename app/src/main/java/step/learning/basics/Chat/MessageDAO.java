@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
-public class UserDAO {
+public class MessageDAO {
     public void setId(UUID id) {
         this.id = id;
     }
@@ -59,7 +59,7 @@ public class UserDAO {
         return replyPreview;
     }
 
-    public UserDAO(JSONObject obj) throws JSONException {
+    public MessageDAO(JSONObject obj) throws JSONException {
         setId(UUID.fromString(obj.getString("id")));
         setAuthor(obj.getString("author"));
         setTxt(obj.getString("txt"));
@@ -78,7 +78,7 @@ public class UserDAO {
         }
     }
 
-    public UserDAO() {
+    public MessageDAO() {
         setId(UUID.randomUUID());
         setMoment(new Date());
     }

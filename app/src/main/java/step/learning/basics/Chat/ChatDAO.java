@@ -13,7 +13,7 @@ public class ChatDAO {
         this.status = status;
     }
 
-    public void setData(List<UserDAO> data) {
+    public void setData(List<MessageDAO> data) {
         this.data = data;
     }
 
@@ -21,7 +21,7 @@ public class ChatDAO {
         return status;
     }
 
-    public List<UserDAO> getData() {
+    public List<MessageDAO> getData() {
         return data;
     }
 
@@ -37,12 +37,12 @@ public class ChatDAO {
     }
 
     private String status;
-    private List<UserDAO> data;
+    private List<MessageDAO> data;
 
     private void ParseData(JSONArray data) throws JSONException {
         for (int i = 0; i < data.length(); i++) {
             JSONObject jsonObj = data.getJSONObject(i);
-            this.data.add(new UserDAO(jsonObj));
+            this.data.add(new MessageDAO(jsonObj));
         }
     }
 }

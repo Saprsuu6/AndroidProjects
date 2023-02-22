@@ -3,8 +3,14 @@ package step.learning.basics.Chat;
 import android.os.NetworkOnMainThreadException;
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -41,5 +47,63 @@ public class Services {
         } finally {
             return content;
         }
+    }
+
+    public void postChatMessage(MessageDAO messageDAO) {
+        try {
+            // region Send to server
+            URL url = new URL(Services.CHAT_URL);
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+
+            urlConnection.setDoOutput(true); // connection will be send data (send body)
+            urlConnection.setDoInput(true); // connection will get data (get body)
+            urlConnection.setRequestMethod("POST");
+            urlConnection.setRequestProperty("Content-Type", "application/json");
+            urlConnection.setRequestProperty("Accept", "*/*");
+            urlConnection.setChunkedStreamingMode(0); // not fragment thread
+
+            OutputStream body = urlConnection.getOutputStream();
+            body.write(getJson(messageDAO).toString().getBytes());
+//            body.write(String.format("{\"author\":\"%s\", \"txt\":\"%s\"}",
+//                    messageDAO.getAuthor(), messageDAO.getTxt()).getBytes());
+//            body.write(String.format("{\"author\":\"%s\", \"txt\":\"%s\", \"idReply\":\"%s\", \"replyPreview\":\"%s\"}",
+//                    userDAO.getAuthor(), userDAO.getTxt(), userDAO.getIdReply().toString(), userDAO.getReplyPreview()).getBytes());
+
+            body.flush();
+            body.close();
+
+            int responseCode = urlConnection.getResponseCode();
+            if (responseCode != 200) {
+                Log.d("postChatMessage", "Response code: " + responseCode);
+                return;
+            }
+            // endregion
+
+            // region Response
+            InputStream reader = urlConnection.getInputStream();
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            byte[] chunk = new byte[4096];
+            int len;
+            while ((len = reader.read(chunk)) != -1) {
+                bytes.write(chunk, 0, len);
+            }
+
+            Log.d("postChatMessage", new String(bytes.toByteArray(), StandardCharsets.UTF_8));
+
+            bytes.close();
+            reader.close();
+            urlConnection.disconnect();
+            // endregion
+        } catch (IOException e) {
+            Log.d("IOException", e.getMessage());
+        } catch (JSONException e) {
+            Log.d("JSONException", e.getMessage());
+        }
+    }
+
+    private JSONObject getJson(MessageDAO messageDAO) throws JSONException {
+        return new JSONObject()
+                .put("author", messageDAO.getAuthor())
+                .put("txt", messageDAO.getTxt());
     }
 }
