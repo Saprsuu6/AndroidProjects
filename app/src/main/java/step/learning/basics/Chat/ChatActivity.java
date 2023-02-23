@@ -78,8 +78,10 @@ public class ChatActivity extends AppCompatActivity {
         startAlarm();
     }
 
+    /**
+     * Send request to server to upload new messages
+     */
     private void startAlarm() {
-
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -171,6 +173,9 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Send new message on server
+     */
     private void postChatMessage() {
         services.postChatMessage(messageDAO);
         AddContainerWithMsg(messageDAO, messageDAOList);
@@ -178,6 +183,9 @@ public class ChatActivity extends AppCompatActivity {
         sendMessage.setText("");
     }
 
+    /**
+     * Prepare content to show it in display
+     */
     private void ParseContent() {
         try {
             chatDAO = new ChatDAO(new JSONObject(content));
@@ -195,8 +203,14 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Set new message view to display
+     *
+     * @param messageDao     Set new message to view to display
+     * @param messageDAOList list of messages to find new replayed message
+     */
     @SuppressLint({"SetTextI18n", "RtlHardcoded", "ClickableViewAccessibility"})
-    private void AddContainerWithMsg(MessageDAO user, List<MessageDAO> messageDAOList) {
+    private void AddContainerWithMsg(MessageDAO messageDao, List<MessageDAO> messageDAOList) {
         LinearLayout messageContainer = new LinearLayout(this);
 
         messageContainer.setLayoutParams(params[0]);
@@ -210,14 +224,14 @@ public class ChatActivity extends AppCompatActivity {
 
         // region date
         TextView textViewDate = new TextView(this);
-        textViewDate.setText(dateFormat.format(user.getMoment()));
+        textViewDate.setText(dateFormat.format(messageDao.getMoment()));
         textViewDate.setLayoutParams(params[2]);
         textViewDate.setPadding(30, 0, 30, 0);
         // endregion
 
         // region time
         TextView textViewTime = new TextView(this);
-        textViewTime.setText(timeFormat.format(user.getMoment()));
+        textViewTime.setText(timeFormat.format(messageDao.getMoment()));
         textViewDate.setLayoutParams(params[2]);
         // endregion
 
@@ -229,25 +243,25 @@ public class ChatActivity extends AppCompatActivity {
 
         // region replaced id
         TextView textViewReplacedId = new TextView(this);
-        textViewReplacedId.setText(user.getId().toString());
+        textViewReplacedId.setText(messageDao.getId().toString());
         textViewReplacedId.setVisibility(View.GONE);
         // endregion
 
         // region replaced txt
         TextView textViewReplacedTxt = new TextView(this);
-        textViewReplacedTxt.setText(user.getTxt().toString());
+        textViewReplacedTxt.setText(messageDao.getTxt().toString());
         textViewReplacedTxt.setVisibility(View.GONE);
         // endregion
 
         // region author
         TextView textViewAuthor = new TextView(this);
-        textViewAuthor.setText(user.getAuthor());
+        textViewAuthor.setText(messageDao.getAuthor());
         textViewAuthor.setLayoutParams(params[1]);
         // endregion
 
         // region txt
         TextView textViewTxt = new TextView(this);
-        textViewTxt.setText(user.getTxt());
+        textViewTxt.setText(messageDao.getTxt());
         textViewTxt.setTextColor(resources.getColorStateList(R.color.black, this.getTheme()));
         textViewTxt.setLayoutParams(params[1]);
         // endregion
@@ -276,8 +290,8 @@ public class ChatActivity extends AppCompatActivity {
 
         // region if reply
         LinearLayout messageReply = null;
-        if (user.getIdReply() != null && user.getReplyPreview() != null) {
-            MessageDAO replayedMsg = FindReplayedMsg(user.getIdReply(), messageDAOList);
+        if (messageDao.getIdReply() != null && messageDao.getReplyPreview() != null) {
+            MessageDAO replayedMsg = FindReplayedMsg(messageDao.getIdReply(), messageDAOList);
             messageReply = new LinearLayout(this);
 
             messageReply.setLayoutParams(params[2]);
@@ -319,7 +333,7 @@ public class ChatActivity extends AppCompatActivity {
             }
 
             // region setters
-            if (Objects.equals(user.getAuthor(), author.getText())) {
+            if (Objects.equals(messageDao.getAuthor(), author.getText())) {
                 message.setBackground(drawables[1]);
                 messageReply.setBackground(drawables[3]);
                 messageWithDate.addView(reply);
@@ -341,7 +355,7 @@ public class ChatActivity extends AppCompatActivity {
             message.addView(textViewTime);
 
             // region setters
-            if (Objects.equals(user.getAuthor(), author.getText())) {
+            if (Objects.equals(messageDao.getAuthor(), author.getText())) {
                 message.setBackground(drawables[1]);
                 messageWithDate.addView(reply);
                 messageWithDate.addView(textViewDate);
@@ -369,6 +383,11 @@ public class ChatActivity extends AppCompatActivity {
         runOnUiThread(() -> chatContainer.addView(messageContainer));
     }
 
+    /**
+     * When choose message to reply
+     *
+     * @param reply replayed message
+     */
     private void PrepareToReply(TextView reply) {
         ViewGroup group = ((ViewGroup) reply.getParent().getParent());
         TextView id = ((TextView) group.getChildAt(1));
@@ -381,6 +400,13 @@ public class ChatActivity extends AppCompatActivity {
         imm.showSoftInput(sendMessage, InputMethodManager.SHOW_IMPLICIT);
     }
 
+    /**
+     * Find replied message to make specific show
+     *
+     * @param uuid           search term
+     * @param messageDAOList list to search
+     * @return current message or new empty message
+     */
     private MessageDAO FindReplayedMsg(UUID uuid, List<MessageDAO> messageDAOList) {
         for (MessageDAO msg : messageDAOList) {
             if (msg.getId().equals(uuid)) {
