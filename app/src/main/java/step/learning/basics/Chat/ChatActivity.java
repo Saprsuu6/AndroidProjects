@@ -9,6 +9,7 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -32,6 +33,8 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 
 import step.learning.basics.R;
@@ -57,6 +60,7 @@ public class ChatActivity extends AppCompatActivity {
     private LinearLayout.LayoutParams layoutParamsVerticalAdaptive;
     private LinearLayout.LayoutParams layoutParamsHorizontalAdaptive;
     private LinearLayout.LayoutParams layoutParamsWrapWithMargins;
+    private Timer timer;
     @SuppressLint("SimpleDateFormat")
     private final DateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy");
     @SuppressLint("SimpleDateFormat")
@@ -70,12 +74,29 @@ public class ChatActivity extends AppCompatActivity {
         uuid = UUID.randomUUID();
         resources = getResources();
 
-        addResources();
-
-        FindViews();
+        timer = new Timer();
         services = new Services(this);
+
+        addResources();
+        FindViews();
         SetListeners();
 
+        LoadStory();
+        startAlarm();
+    }
+
+    private void startAlarm() {
+
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                LoadStory();
+                runOnUiThread(() -> chatContainer.removeAllViews());
+            }
+        }, 5L, 5000L);
+    }
+
+    private void LoadStory() {
         new Thread(() -> {
             content = services.LoadUrl();
             ParseContent();
@@ -98,26 +119,14 @@ public class ChatActivity extends AppCompatActivity {
         this.ratesBgLeftReply = resources.getDrawable(R.drawable.message_cell_left_reply, this.getTheme());
         this.ratesBgRightReply = resources.getDrawable(R.drawable.message_cell_right_reply, this.getTheme());
 
-        layoutParamsContainer = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        );
+        layoutParamsContainer = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        layoutParamsVerticalAdaptive = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        );
+        layoutParamsVerticalAdaptive = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        layoutParamsHorizontalAdaptive = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        );
+        layoutParamsHorizontalAdaptive = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParamsHorizontalAdaptive.gravity = Gravity.CENTER;
 
-        layoutParamsWrapWithMargins = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        );
+        layoutParamsWrapWithMargins = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParamsWrapWithMargins.setMargins(10, 20, 10, 20);
     }
 
@@ -174,8 +183,6 @@ public class ChatActivity extends AppCompatActivity {
         for (MessageDAO user : messageDAOList) {
             AddContainerWithMsg(user, messageDAOList);
         }
-
-        scrollView.fullScroll(ScrollView.FOCUS_DOWN);
     }
 
     @SuppressLint({"SetTextI18n", "RtlHardcoded"})
@@ -209,6 +216,12 @@ public class ChatActivity extends AppCompatActivity {
         message.setLayoutParams(layoutParamsHorizontalAdaptive);
         message.setPadding(20, 5, 20, 5);
         message.setOrientation(LinearLayout.VERTICAL);
+
+        // region id
+        TextView textViewId = new TextView(this);
+        textViewId.setText(user.getId().toString());
+        textViewId.setVisibility(View.GONE);
+        // endregion
 
         // region author
         TextView textViewAuthor = new TextView(this);
@@ -311,7 +324,13 @@ public class ChatActivity extends AppCompatActivity {
 
         // endregion
 
+        Button reply = new Button(this);
+        reply.setText("Reply");
+
         messageContainer.addView(messageWithDate);
+        messageContainer.addView(textViewId);
+        messageContainer.addView(reply);
+
         runOnUiThread(() -> chatContainer.addView(messageContainer));
     }
 
