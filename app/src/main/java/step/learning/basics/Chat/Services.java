@@ -27,7 +27,7 @@ public class Services {
 
     public String LoadUrl() {
         StringBuilder sb = new StringBuilder();
-        String content = new String();
+        String content = "";
 
         try (InputStream inputStream = new URL(Services.CHAT_URL).openStream()) {
             int sym;
@@ -64,15 +64,11 @@ public class Services {
 
             OutputStream body = urlConnection.getOutputStream();
             body.write(getJson(messageDAO).toString().getBytes());
-//            body.write(String.format("{\"author\":\"%s\", \"txt\":\"%s\"}",
-//                    messageDAO.getAuthor(), messageDAO.getTxt()).getBytes());
-//            body.write(String.format("{\"author\":\"%s\", \"txt\":\"%s\", \"idReply\":\"%s\", \"replyPreview\":\"%s\"}",
-//                    userDAO.getAuthor(), userDAO.getTxt(), userDAO.getIdReply().toString(), userDAO.getReplyPreview()).getBytes());
 
             body.flush();
             body.close();
 
-            int responseCode = urlConnection.getResponseCode();
+             int responseCode = urlConnection.getResponseCode();
             if (responseCode != 200) {
                 Log.d("postChatMessage", "Response code: " + responseCode);
                 return;
@@ -102,8 +98,15 @@ public class Services {
     }
 
     private JSONObject getJson(MessageDAO messageDAO) throws JSONException {
-        return new JSONObject()
+        JSONObject object = new JSONObject()
                 .put("author", messageDAO.getAuthor())
                 .put("txt", messageDAO.getTxt());
+
+        if (messageDAO.getIdReply() != null)
+            object.put("idReply", messageDAO.getIdReply());
+        if (messageDAO.getReplyPreview() != null)
+            object.put("replyPreview", messageDAO.getReplyPreview());
+
+        return object;
     }
 }

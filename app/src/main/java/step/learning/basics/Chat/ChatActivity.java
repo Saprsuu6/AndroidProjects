@@ -1,7 +1,6 @@
 package step.learning.basics.Chat;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -12,7 +11,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -25,13 +23,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -44,12 +35,14 @@ import java.util.UUID;
 import step.learning.basics.R;
 
 public class ChatActivity extends AppCompatActivity {
-    private List<MessageDAO> messageDAOList;
-    private String replyeadID;
+    private String replayedTxt = null;
+    private String replayedID = null;
+    private String content = null;
     private Resources resources;
+    private InputMethodManager imm;
+    private Timer timer;
     private UUID uuid;
     private Services services;
-    private String content = null;
     private ChatDAO chatDAO;
     private MessageDAO messageDAO;
     private LinearLayout chatContainer;
@@ -57,16 +50,9 @@ public class ChatActivity extends AppCompatActivity {
     private TextView author;
     private EditText sendMessage;
     private ScrollView scrollView;
-    private android.graphics.drawable.Drawable ratesBgLeft;
-    private android.graphics.drawable.Drawable ratesBgRight;
-    private android.graphics.drawable.Drawable ratesBgLeftReply;
-    private android.graphics.drawable.Drawable ratesBgRightReply;
-    private LinearLayout.LayoutParams layoutParamsContainer;
-    private LinearLayout.LayoutParams layoutParamsVerticalAdaptive;
-    private LinearLayout.LayoutParams layoutParamsHorizontalAdaptive;
-    private LinearLayout.LayoutParams layoutParamsWrapWithMargins;
-    private InputMethodManager imm;
-    private Timer timer;
+    private List<MessageDAO> messageDAOList;
+    private final android.graphics.drawable.Drawable[] drawables = new Drawable[4];
+    private final LinearLayout.LayoutParams[] params = new LinearLayout.LayoutParams[4];
     @SuppressLint("SimpleDateFormat")
     private final DateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy");
     @SuppressLint("SimpleDateFormat")
@@ -89,7 +75,7 @@ public class ChatActivity extends AppCompatActivity {
         SetListeners();
 
         LoadStory();
-        //startAlarm();
+        startAlarm();
     }
 
     private void startAlarm() {
@@ -118,58 +104,52 @@ public class ChatActivity extends AppCompatActivity {
         send = findViewById(R.id.send);
     }
 
-    private void hideSoftKeyboard(Activity activity) {
-        if (imm.isAcceptingText()) {
-            imm.hideSoftInputFromWindow(
-                    activity.getCurrentFocus().getWindowToken(),
-                    0
-            );
-        }
-    }
-
     @SuppressLint("UseCompatLoadingForDrawables")
     private void addResources() {
         Resources resources = getResources();
-        this.ratesBgLeft = resources.getDrawable(R.drawable.message_cell_left, this.getTheme());
-        this.ratesBgRight = resources.getDrawable(R.drawable.message_cell_right, this.getTheme());
-        this.ratesBgLeftReply = resources.getDrawable(R.drawable.message_cell_left_reply, this.getTheme());
-        this.ratesBgRightReply = resources.getDrawable(R.drawable.message_cell_right_reply, this.getTheme());
+        drawables[0] = resources.getDrawable(R.drawable.message_cell_left, this.getTheme());
+        drawables[1] = resources.getDrawable(R.drawable.message_cell_right, this.getTheme());
+        drawables[2] = resources.getDrawable(R.drawable.message_cell_left_reply, this.getTheme());
+        drawables[3] = resources.getDrawable(R.drawable.message_cell_right_reply, this.getTheme());
 
-        layoutParamsContainer = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params[0] = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        layoutParamsVerticalAdaptive = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params[1] = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        layoutParamsHorizontalAdaptive = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParamsHorizontalAdaptive.gravity = Gravity.CENTER;
+        params[2] = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params[2].gravity = Gravity.CENTER;
 
-        layoutParamsWrapWithMargins = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParamsWrapWithMargins.setMargins(10, 20, 10, 20);
+        params[3] = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params[3].setMargins(10, 20, 10, 20);
     }
 
+    @SuppressLint({"ClickableViewAccessibility", "UseCompatLoadingForDrawables"})
     private void SetListeners() {
         send.setOnClickListener(this::SendButtonClick);
-        sendMessage.setOnKeyListener(new View.OnKeyListener() {
-            @SuppressLint("UseCompatLoadingForDrawables")
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (sendMessage.getText().toString().trim().length() > 0) {
-                    send.setEnabled(true);
-                    send.setBackground(resources.getDrawable(R.drawable.can_send, getTheme()));
-                } else {
-                    send.setEnabled(false);
-                    send.setBackground(resources.getDrawable(R.drawable.cannot_send, getTheme()));
-                }
-                return true;
+        sendMessage.setOnKeyListener((v, keyCode, event) -> {
+            if (sendMessage.getText().toString().trim().length() > 0) {
+                send.setEnabled(true);
+                send.setBackground(resources.getDrawable(R.drawable.can_send, getTheme()));
+            } else {
+                send.setEnabled(false);
+                send.setBackground(resources.getDrawable(R.drawable.cannot_send, getTheme()));
+            }
+            return true;
+        });
+
+        sendMessage.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                if (replayedID != null) replayedID = null;
+                if (replayedTxt != null) replayedTxt = null;
             }
         });
-        sendMessage.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    if (replyeadID.length() > 0)
-                        replyeadID = "";
-                }
+
+        findViewById(R.id.chat_layout).setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                sendMessage.clearFocus();
+                imm.hideSoftInputFromWindow(sendMessage.getWindowToken(), 0);
             }
+            return true;
         });
     }
 
@@ -178,11 +158,16 @@ public class ChatActivity extends AppCompatActivity {
             messageDAO = new MessageDAO();
 
             messageDAO.setAuthor(author.getText().toString());
-            messageDAO.setTxt(sendMessage.getText().toString());
-//            userDAO.setIdReply(UUID.fromString("13486278-b21f-11ed-96d1-f23c93f195e6"));
-//            userDAO.setReplyPreview("шо вы...");
+            messageDAO.setTxt(sendMessage.getText().toString().trim());
+
+            if (replayedID != null) {
+                messageDAO.setIdReply(UUID.fromString(replayedID));
+                messageDAO.setReplyPreview(replayedTxt + "...");
+            }
 
             new Thread(this::postChatMessage).start();
+        } else {
+            Toast.makeText(this, "Empty message", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -214,51 +199,57 @@ public class ChatActivity extends AppCompatActivity {
     private void AddContainerWithMsg(MessageDAO user, List<MessageDAO> messageDAOList) {
         LinearLayout messageContainer = new LinearLayout(this);
 
-        messageContainer.setLayoutParams(layoutParamsContainer);
+        messageContainer.setLayoutParams(params[0]);
         messageContainer.setOrientation(LinearLayout.HORIZONTAL);
 
         // region message with date
         LinearLayout messageWithDate = new LinearLayout(this);
-        messageWithDate.setLayoutParams(layoutParamsWrapWithMargins);
+        messageWithDate.setLayoutParams(params[3]);
         messageWithDate.setPadding(20, 5, 20, 5);
         messageWithDate.setOrientation(LinearLayout.HORIZONTAL);
 
         // region date
         TextView textViewDate = new TextView(this);
         textViewDate.setText(dateFormat.format(user.getMoment()));
-        textViewDate.setLayoutParams(layoutParamsHorizontalAdaptive);
+        textViewDate.setLayoutParams(params[2]);
         textViewDate.setPadding(30, 0, 30, 0);
         // endregion
 
         // region time
         TextView textViewTime = new TextView(this);
         textViewTime.setText(timeFormat.format(user.getMoment()));
-        textViewDate.setLayoutParams(layoutParamsHorizontalAdaptive);
+        textViewDate.setLayoutParams(params[2]);
         // endregion
 
         // region message
         LinearLayout message = new LinearLayout(this);
-        message.setLayoutParams(layoutParamsHorizontalAdaptive);
+        message.setLayoutParams(params[2]);
         message.setPadding(20, 5, 20, 5);
         message.setOrientation(LinearLayout.VERTICAL);
 
-        // region id
-        TextView textViewId = new TextView(this);
-        textViewId.setText(user.getId().toString());
-        textViewId.setVisibility(View.GONE);
+        // region replaced id
+        TextView textViewReplacedId = new TextView(this);
+        textViewReplacedId.setText(user.getId().toString());
+        textViewReplacedId.setVisibility(View.GONE);
+        // endregion
+
+        // region replaced txt
+        TextView textViewReplacedTxt = new TextView(this);
+        textViewReplacedTxt.setText(user.getTxt().toString());
+        textViewReplacedTxt.setVisibility(View.GONE);
         // endregion
 
         // region author
         TextView textViewAuthor = new TextView(this);
         textViewAuthor.setText(user.getAuthor());
-        textViewAuthor.setLayoutParams(layoutParamsVerticalAdaptive);
+        textViewAuthor.setLayoutParams(params[1]);
         // endregion
 
         // region txt
         TextView textViewTxt = new TextView(this);
         textViewTxt.setText(user.getTxt());
         textViewTxt.setTextColor(resources.getColorStateList(R.color.black, this.getTheme()));
-        textViewTxt.setLayoutParams(layoutParamsVerticalAdaptive);
+        textViewTxt.setLayoutParams(params[1]);
         // endregion
 
         message.addView(textViewAuthor);
@@ -267,21 +258,14 @@ public class ChatActivity extends AppCompatActivity {
 
         TextView reply = new TextView(this);
         reply.setText("Reply");
-        reply.setLayoutParams(layoutParamsHorizontalAdaptive);
+        reply.setLayoutParams(params[2]);
         reply.setOnTouchListener(new View.OnTouchListener() {
             @SuppressLint("ClickableViewAccessibility")
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     reply.setTextColor(resources.getColorStateList(R.color.reply, getTheme()));
-
-                    ViewGroup group = ((ViewGroup) reply.getParent().getParent());
-                    TextView id = ((TextView) group.getChildAt(1));
-                    replyeadID = id.getText().toString();
-
-                    sendMessage.requestFocus();
-                    imm.showSoftInput(sendMessage, InputMethodManager.SHOW_IMPLICIT);
-                    // TODO: unfocused edit text (touch screen), send replayed msg
+                    PrepareToReply(reply);
                 }
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     reply.setTextColor(resources.getColorStateList(R.color.gray, getTheme()));
@@ -296,32 +280,32 @@ public class ChatActivity extends AppCompatActivity {
             MessageDAO replayedMsg = FindReplayedMsg(user.getIdReply(), messageDAOList);
             messageReply = new LinearLayout(this);
 
-            messageReply.setLayoutParams(layoutParamsHorizontalAdaptive);
+            messageReply.setLayoutParams(params[2]);
             messageReply.setPadding(20, 10, 20, 10);
             messageReply.setOrientation(LinearLayout.VERTICAL);
 
             // region message
             LinearLayout messageReplayed = new LinearLayout(this);
             messageReplayed.setPadding(20, 5, 20, 5);
-            messageReplayed.setLayoutParams(layoutParamsWrapWithMargins);
+            messageReplayed.setLayoutParams(params[3]);
             messageReplayed.setOrientation(LinearLayout.VERTICAL);
 
             // region author
             TextView textViewAuthorReplayed = new TextView(this);
-            textViewAuthorReplayed.setLayoutParams(layoutParamsVerticalAdaptive);
+            textViewAuthorReplayed.setLayoutParams(params[1]);
             // endregion
 
             // region replayedMsg
             TextView textViewTxtReplayed = new TextView(this);
             textViewTxtReplayed.setTextColor(resources.getColorStateList(R.color.black, this.getTheme()));
-            textViewTxtReplayed.setLayoutParams(layoutParamsVerticalAdaptive);
+            textViewTxtReplayed.setLayoutParams(params[1]);
             // endregion
 
             messageReplayed.addView(textViewAuthorReplayed);
             messageReplayed.addView(textViewTxtReplayed);
             // endregion
 
-            message.setLayoutParams(layoutParamsVerticalAdaptive);
+            message.setLayoutParams(params[1]);
             messageReply.addView(messageReplayed);
             messageReply.addView(message);
             messageReply.addView(textViewTime);
@@ -336,16 +320,16 @@ public class ChatActivity extends AppCompatActivity {
 
             // region setters
             if (Objects.equals(user.getAuthor(), author.getText())) {
-                message.setBackground(ratesBgRight);
-                messageReply.setBackground(ratesBgRightReply);
+                message.setBackground(drawables[1]);
+                messageReply.setBackground(drawables[3]);
                 messageWithDate.addView(reply);
                 messageWithDate.addView(textViewDate);
                 messageWithDate.addView(messageReply);
                 messageContainer.setGravity(Gravity.RIGHT);
                 textViewTime.setGravity(Gravity.LEFT);
             } else {
-                message.setBackground(ratesBgLeft);
-                messageReply.setBackground(ratesBgLeftReply);
+                message.setBackground(drawables[0]);
+                messageReply.setBackground(drawables[2]);
                 messageWithDate.addView(messageReply);
                 messageWithDate.addView(textViewDate);
                 messageWithDate.addView(reply);
@@ -358,14 +342,14 @@ public class ChatActivity extends AppCompatActivity {
 
             // region setters
             if (Objects.equals(user.getAuthor(), author.getText())) {
-                message.setBackground(ratesBgRight);
+                message.setBackground(drawables[1]);
                 messageWithDate.addView(reply);
                 messageWithDate.addView(textViewDate);
                 messageWithDate.addView(message);
                 messageContainer.setGravity(Gravity.RIGHT);
                 textViewTime.setGravity(Gravity.LEFT);
             } else {
-                message.setBackground(ratesBgLeft);
+                message.setBackground(drawables[0]);
                 messageWithDate.addView(message);
                 messageWithDate.addView(textViewDate);
                 messageWithDate.addView(reply);
@@ -379,9 +363,22 @@ public class ChatActivity extends AppCompatActivity {
         // endregion
 
         messageContainer.addView(messageWithDate);
-        messageContainer.addView(textViewId);
+        messageContainer.addView(textViewReplacedId);
+        messageContainer.addView(textViewReplacedTxt);
 
         runOnUiThread(() -> chatContainer.addView(messageContainer));
+    }
+
+    private void PrepareToReply(TextView reply) {
+        ViewGroup group = ((ViewGroup) reply.getParent().getParent());
+        TextView id = ((TextView) group.getChildAt(1));
+        TextView txt = ((TextView) group.getChildAt(2));
+
+        replayedID = id.getText().toString();
+        replayedTxt = txt.getText().toString();
+
+        sendMessage.requestFocus();
+        imm.showSoftInput(sendMessage, InputMethodManager.SHOW_IMPLICIT);
     }
 
     private MessageDAO FindReplayedMsg(UUID uuid, List<MessageDAO> messageDAOList) {
