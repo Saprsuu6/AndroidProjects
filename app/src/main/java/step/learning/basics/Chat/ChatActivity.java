@@ -1,9 +1,22 @@
 package step.learning.basics.Chat;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -19,6 +32,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,36 +49,62 @@ import java.util.TimerTask;
 import java.util.UUID;
 
 import step.learning.basics.R;
+import step.learning.basics.Vibrator;
 
 public class ChatActivity extends AppCompatActivity {
+    // region temps
     private String replayedTxt = null;
     private String replayedID = null;
     private String content = null;
+    private UUID uuid;
+    private Handler handler;
+    private String CHANNEL_ID = "chat_channel";
+    // endregion
+    // region services
     private Resources resources;
     private InputMethodManager imm;
     private Timer timer;
-    private UUID uuid;
+    private Vibrator vibrator;
     private Services services;
+    // endregion
+    // region DAOs
     private ChatDAO chatDAO;
     private MessageDAO messageDAO;
+    private List<MessageDAO> messageDAOList;
+    // endregion
+    // region views
     private LinearLayout chatContainer;
     private ImageButton send;
     private TextView author;
     private EditText sendMessage;
     private ScrollView scrollView;
-    private List<MessageDAO> messageDAOList;
+    // endregion
+    // region styles
     private final android.graphics.drawable.Drawable[] drawables = new Drawable[4];
     private final LinearLayout.LayoutParams[] params = new LinearLayout.LayoutParams[4];
+    // endregion
+    // region formatters
     @SuppressLint("SimpleDateFormat")
     private final DateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy");
     @SuppressLint("SimpleDateFormat")
     private final DateFormat timeFormat = new SimpleDateFormat("HH:mm");
+    // endregion
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
+        FindViews();
+
+        RegisterChanel();
+        handler = new Handler();
+        vibrator = new Vibrator(this);
+
+        ShowDialog();
+    }
+
+    private void LoadChat() {
         uuid = UUID.randomUUID();
         resources = getResources();
         imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
@@ -71,24 +113,57 @@ public class ChatActivity extends AppCompatActivity {
         services = new Services(this);
 
         addResources();
-        FindViews();
         SetListeners();
 
+        // update chat after 5 seconds
+        handler.postDelayed(this::UpdateChat, 5000L);
+
         LoadStory();
-        startAlarm();
     }
 
     /**
      * Send request to server to upload new messages
      */
-    private void startAlarm() {
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                LoadStory();
-                runOnUiThread(() -> chatContainer.removeAllViews());
+    private void UpdateChat() {
+        LoadStory();
+        runOnUiThread(() -> chatContainer.removeAllViews());
+        ShowNotification();
+        handler.postDelayed(this::UpdateChat, 5000L);
+    }
+
+    private void RegisterChanel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Chat";
+            String description = "Chat channel";
+
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    private void ShowNotification() {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.chat)
+                .setContentTitle("Chat")
+                .setContentText("Message from chat")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true);
+
+        NotificationManagerCompat notificationManager =
+                NotificationManagerCompat.from(ChatActivity.this);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(ChatActivity.this, new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 100);
+                return;
             }
-        }, 5L, 5000L);
+        }
+
+        notificationManager.notify(1001, builder.build());
     }
 
     private void LoadStory() {
@@ -128,15 +203,41 @@ public class ChatActivity extends AppCompatActivity {
     @SuppressLint({"ClickableViewAccessibility", "UseCompatLoadingForDrawables"})
     private void SetListeners() {
         send.setOnClickListener(this::SendButtonClick);
-        sendMessage.setOnKeyListener((v, keyCode, event) -> {
-            if (sendMessage.getText().toString().trim().length() > 0) {
-                send.setEnabled(true);
-                send.setBackground(resources.getDrawable(R.drawable.can_send, getTheme()));
-            } else {
-                send.setEnabled(false);
-                send.setBackground(resources.getDrawable(R.drawable.cannot_send, getTheme()));
+
+        author.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    author.setTextColor(resources.getColorStateList(R.color.reply, getTheme()));
+                    ChangeName();
+                } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    author.setTextColor(resources.getColorStateList(R.color.black, getTheme()));
+                }
+                return true;
             }
-            return true;
+        });
+
+        sendMessage.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                System.out.println("beforeTextChanged");
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                System.out.println("onTextChanged");
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (sendMessage.getText().toString().trim().length() > 0) {
+                    send.setEnabled(true);
+                    send.setBackground(resources.getDrawable(R.drawable.can_send, getTheme()));
+                } else {
+                    send.setEnabled(false);
+                    send.setBackground(resources.getDrawable(R.drawable.cannot_send, getTheme()));
+                }
+            }
         });
 
         sendMessage.setOnFocusChangeListener((v, hasFocus) -> {
@@ -169,6 +270,7 @@ public class ChatActivity extends AppCompatActivity {
 
             new Thread(this::postChatMessage).start();
         } else {
+            vibrator.run();
             Toast.makeText(this, "Empty message", Toast.LENGTH_SHORT).show();
         }
     }
@@ -179,8 +281,11 @@ public class ChatActivity extends AppCompatActivity {
     private void postChatMessage() {
         services.postChatMessage(messageDAO);
         AddContainerWithMsg(messageDAO, messageDAOList);
-        scrollView.fullScroll(ScrollView.FOCUS_DOWN);
         sendMessage.setText("");
+
+        scrollView.post(() -> {
+            scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+        });
     }
 
     /**
@@ -201,6 +306,10 @@ public class ChatActivity extends AppCompatActivity {
         for (MessageDAO user : messageDAOList) {
             AddContainerWithMsg(user, messageDAOList);
         }
+
+        scrollView.post(() -> {
+            scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+        });
     }
 
     /**
@@ -280,11 +389,10 @@ public class ChatActivity extends AppCompatActivity {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     reply.setTextColor(resources.getColorStateList(R.color.reply, getTheme()));
                     PrepareToReply(reply);
-                }
-                if (event.getAction() == MotionEvent.ACTION_UP) {
+                } else if (event.getAction() == MotionEvent.ACTION_UP) {
                     reply.setTextColor(resources.getColorStateList(R.color.gray, getTheme()));
                 }
-                return false;
+                return true;
             }
         });
 
@@ -415,5 +523,68 @@ public class ChatActivity extends AppCompatActivity {
         }
 
         return null;
+    }
+
+    private void ShowDialog() {
+        EditText inputName = new EditText(this);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        inputName.setLayoutParams(lp);
+
+        AlertDialog dialog = CreateNewAlertDialog(new DialogInterface.OnClickListener() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (inputName.getText().toString().trim().length() > 0) {
+                    author.setText(inputName.getText().toString().trim());
+                    LoadChat();
+                } else {
+                    author.setText("User");
+                    LoadChat();
+                    vibrator.run();
+                    Toast.makeText(ChatActivity.this, "You have to set name", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }, inputName);
+
+        dialog.show();
+    }
+
+    private void ChangeName() {
+        EditText inputName = new EditText(this);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        inputName.setLayoutParams(lp);
+        if (author != null) {
+            inputName.setText(author.getText());
+        }
+
+        AlertDialog dialog = CreateNewAlertDialog(new DialogInterface.OnClickListener() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (inputName.getText().toString().trim().length() > 0) {
+                    author.setText(inputName.getText().toString().trim());
+                } else {
+                    author.setText("User");
+                }
+            }
+        }, inputName);
+
+        dialog.show();
+    }
+
+    private AlertDialog CreateNewAlertDialog(DialogInterface.OnClickListener listener, EditText inputName) {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this)
+                .setTitle("User name")
+                .setMessage("Enter your name")
+                .setIcon(R.drawable.user)
+                .setCancelable(false)
+                .setView(inputName)
+                .setPositiveButton("Enter", listener);
+
+        return dialog.create();
     }
 }

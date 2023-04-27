@@ -1,5 +1,6 @@
 package step.learning.basics.Calculator;
 
+import android.app.Activity;
 import android.view.View;
 import android.widget.Button;
 
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.Locale;
 
 import step.learning.basics.R;
+import step.learning.basics.Vibrator;
 
 public class Buttons {
     private Views views;
@@ -18,7 +20,7 @@ public class Buttons {
     private String lastOperation;
     public static String signMinus = CalcActivity.context.getString(R.string.btnMinus);
     public static String signComa = CalcActivity.context.getString(R.string.btnComa);
-    private Vibrator vibrator = new Vibrator();
+    private Vibrator vibrator = new Vibrator((Activity) CalcActivity.context);
 
     public Buttons(List<View> numbers, HashMap<View, String> operations, View[] servicesButtons, Views views) {
         Math.setViews(views);

@@ -1,5 +1,6 @@
 package step.learning.basics.Game2048;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import step.learning.basics.R;
 
 public class Game2048Activity extends AppCompatActivity {
+    @SuppressLint("StaticFieldLeak")
     public static Context context;
     public static Animation spawnAnimation;
     private Game2048Logic logic;
@@ -66,7 +68,6 @@ public class Game2048Activity extends AppCompatActivity {
             public void OnSwipeBottom() {
                 if (logic.MoveBottom()) {
                     logic.SpawnCell(spawnAnimation);
-                    ;
                 } else
                     Toast.makeText(Game2048Activity.this, "No Bottom Move", Toast.LENGTH_SHORT).show();
             }
@@ -100,6 +101,7 @@ public class Game2048Activity extends AppCompatActivity {
     /**
      * Code initialize 2048 buttons
      */
+    @SuppressLint("DiscouragedApi")
     private TextView[][] FindTextViews() {
         TextView[][] tvCells = new TextView[4][4];
 

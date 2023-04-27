@@ -1,5 +1,6 @@
-package step.learning.basics.Calculator;
+package step.learning.basics;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.os.VibrationEffect;
@@ -11,12 +12,12 @@ public class Vibrator {
     private final android.os.Vibrator vibrator;
     private final long[] vibrationPattern = {0, 200, 100, 200};
 
-    public Vibrator() {
+    public Vibrator(Activity activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            VibratorManager vibratorManager = (VibratorManager) CalcActivity.context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE);
+            VibratorManager vibratorManager = (VibratorManager) activity.getSystemService(Context.VIBRATOR_MANAGER_SERVICE);
             vibrator = vibratorManager.getDefaultVibrator();
         } else {
-            vibrator = (android.os.Vibrator) CalcActivity.context.getSystemService(Context.VIBRATOR_SERVICE);
+            vibrator = (android.os.Vibrator) activity.getSystemService(Context.VIBRATOR_SERVICE);
         }
     }
 

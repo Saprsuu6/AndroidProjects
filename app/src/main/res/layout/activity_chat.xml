@@ -27,7 +27,7 @@
             android:layout_height="match_parent"
             android:layout_weight="15"
             android:gravity="center"
-            android:text="General chat"
+            tools:text="General chat"
             android:textSize="16sp" />
     </LinearLayout>
 
