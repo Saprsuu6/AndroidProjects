@@ -8,8 +8,8 @@ import android.os.VibratorManager;
 import step.learning.basics.Calculator.CalcActivity;
 
 public class Vibrator {
-    private android.os.Vibrator vibrator;
-    private long[] vibrationPattern = {0, 200, 100, 200};
+    private final android.os.Vibrator vibrator;
+    private final long[] vibrationPattern = {0, 200, 100, 200};
 
     public Vibrator() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
